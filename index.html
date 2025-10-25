@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Carte Interactive des 32 États du Mexique</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    
+    <!-- Leaflet JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    
     <style>
         /* DESIGN SYSTEM */
         :root {
@@ -237,54 +244,58 @@
         }
 
         .map-container {
-            max-width: 100%;
-            margin: 0 auto;
+            width: 100%;
+            height: 100%;
             position: relative;
-            display: inline-block;
         }
 
-        .map-image {
-            max-width: 100%;
-            height: auto;
-            display: block;
+        #map {
+            width: 100%;
+            height: 100%;
+            min-height: 600px;
             border-radius: var(--radius-lg);
             box-shadow: var(--shadow-md);
         }
 
-        /* SVG overlay positioned on top of image */
-        .map-overlay-svg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
+        /* Leaflet popup customization */
+        .leaflet-popup-content-wrapper {
+            background-color: var(--color-surface);
+            color: var(--color-text);
+            border-radius: var(--radius-base);
+            box-shadow: var(--shadow-md);
         }
 
-        .map-overlay-svg path,
-        .map-overlay-svg polygon,
-        .map-overlay-svg circle {
-            fill: rgba(var(--color-teal-500-rgb), 0.1);
-            stroke: rgba(var(--color-teal-500-rgb), 0.4);
-            stroke-width: 2;
-            cursor: pointer;
-            transition: all var(--duration-normal) var(--ease-standard);
-            pointer-events: all;
+        .leaflet-popup-content {
+            margin: var(--space-12);
+            font-family: var(--font-family-base);
         }
 
-        .map-overlay-svg path:hover,
-        .map-overlay-svg polygon:hover,
-        .map-overlay-svg circle:hover {
-            fill: rgba(var(--color-teal-500-rgb), 0.4);
-            stroke: var(--color-teal-500);
-            stroke-width: 3;
-            filter: drop-shadow(0 0 8px rgba(var(--color-teal-500-rgb), 0.6));
+        .leaflet-popup-tip {
+            background-color: var(--color-surface);
         }
 
-        .map-overlay-svg path:active,
-        .map-overlay-svg polygon:active,
-        .map-overlay-svg circle:active {
-            fill: rgba(var(--color-teal-500-rgb), 0.6);
+        .state-popup-title {
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-primary);
+            margin-bottom: var(--space-8);
+        }
+
+        .state-popup-link {
+            display: inline-block;
+            margin-top: var(--space-8);
+            padding: var(--space-8) var(--space-16);
+            background-color: var(--color-primary);
+            color: var(--color-white);
+            text-decoration: none;
+            border-radius: var(--radius-base);
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-medium);
+            transition: background-color var(--duration-normal) var(--ease-standard);
+        }
+
+        .state-popup-link:hover {
+            background-color: var(--color-primary-hover);
         }
 
         .state-overlay {
@@ -558,116 +569,10 @@
             <!-- Map Section -->
             <div class="map-section">
                 <div class="map-container">
-                    <!-- Image de fond -->
-                    <img 
-                        src="https://pplx-res.cloudinary.com/image/upload/v1761423488/pplx_project_search_images/b618a28b6f97d31b887e7b74ca3c15c067de823c.png" 
-                        alt="Carte du Mexique" 
-                        class="map-image"
-                        id="mapImage"
-                    >
-                    
-                    <!-- SVG superposé avec zones cliquables - coordonnées ajustées -->
-                    <svg class="map-overlay-svg" viewBox="0 0 1400 900" preserveAspectRatio="xMidYMid slice">
-                        <!-- Baja California -->
-                        <path id="Baja California" d="M 130,120 L 185,105 L 195,145 L 205,200 L 210,260 L 205,300 L 185,305 L 165,280 L 155,230 L 145,180 Z" data-state="Baja California"/>
-                        
-                        <!-- Baja California Sur -->
-                        <path id="Baja California Sur" d="M 165,310 L 185,315 L 190,370 L 192,430 L 185,485 L 170,490 L 155,465 L 150,410 L 155,360 Z" data-state="Baja California Sur"/>
-                        
-                        <!-- Sonora -->
-                        <path id="Sonora" d="M 215,115 L 310,125 L 335,165 L 350,215 L 355,275 L 340,315 L 310,325 L 270,315 L 230,285 L 215,230 L 210,170 Z" data-state="Sonora"/>
-                        
-                        <!-- Chihuahua -->
-                        <path id="Chihuahua" d="M 360,130 L 500,145 L 525,190 L 535,250 L 530,305 L 505,330 L 470,335 L 425,325 L 380,305 L 360,265 L 355,200 Z" data-state="Chihuahua"/>
-                        
-                        <!-- Sinaloa -->
-                        <path id="Sinaloa" d="M 265,330 L 340,345 L 365,395 L 380,450 L 385,495 L 370,525 L 340,535 L 305,525 L 270,495 L 250,450 L 250,385 Z" data-state="Sinaloa"/>
-                        
-                        <!-- Durango -->
-                        <path id="Durango" d="M 380,310 L 470,320 L 495,365 L 505,420 L 500,470 L 475,495 L 445,500 L 410,490 L 385,460 L 370,405 L 365,350 Z" data-state="Durango"/>
-                        
-                        <!-- Coahuila -->
-                        <path id="Coahuila" d="M 535,195 L 650,210 L 680,255 L 690,310 L 685,365 L 660,390 L 625,395 L 580,380 L 545,355 L 530,300 L 530,245 Z" data-state="Coahuila"/>
-                        
-                        <!-- Nuevo León -->
-                        <path id="Nuevo León" d="M 690,260 L 740,275 L 755,315 L 758,360 L 745,390 L 720,400 L 690,395 L 685,350 L 685,300 Z" data-state="Nuevo León"/>
-                        
-                        <!-- Tamaulipas -->
-                        <path id="Tamaulipas" d="M 760,285 L 840,305 L 865,355 L 875,410 L 870,465 L 850,495 L 820,505 L 780,490 L 755,450 L 745,395 L 745,335 Z" data-state="Tamaulipas"/>
-                        
-                        <!-- Zacatecas -->
-                        <path id="Zacatecas" d="M 510,475 L 580,485 L 605,530 L 610,575 L 595,605 L 565,615 L 530,610 L 505,585 L 495,540 L 495,510 Z" data-state="Zacatecas"/>
-                        
-                        <!-- San Luis Potosí -->
-                        <path id="San Luis Potosí" d="M 615,485 L 685,495 L 715,540 L 725,590 L 720,635 L 695,660 L 660,665 L 625,650 L 605,615 L 600,565 L 605,520 Z" data-state="San Luis Potosí"/>
-                        
-                        <!-- Nayarit -->
-                        <path id="Nayarit" d="M 335,545 L 400,560 L 425,605 L 430,650 L 415,675 L 385,685 L 355,675 L 330,645 L 320,595 Z" data-state="Nayarit"/>
-                        
-                        <!-- Aguascalientes -->
-                        <circle id="Aguascalientes" cx="565" cy="545" r="18" data-state="Aguascalientes"/>
-                        
-                        <!-- Jalisco -->
-                        <path id="Jalisco" d="M 415,570 L 510,580 L 545,625 L 560,680 L 555,725 L 530,755 L 490,760 L 445,750 L 410,720 L 395,675 L 395,620 Z" data-state="Jalisco"/>
-                        
-                        <!-- Colima -->
-                        <path id="Colima" d="M 485,765 L 515,775 L 520,805 L 505,820 L 480,815 L 470,790 Z" data-state="Colima"/>
-                        
-                        <!-- Michoacán -->
-                        <path id="Michoacán" d="M 535,685 L 620,695 L 655,740 L 665,785 L 655,820 L 625,835 L 580,835 L 540,820 L 515,785 L 510,735 Z" data-state="Michoacán"/>
-                        
-                        <!-- Guanajuato -->
-                        <path id="Guanajuato" d="M 595,610 L 665,620 L 690,660 L 690,700 L 670,720 L 640,725 L 605,715 L 580,690 L 575,650 Z" data-state="Guanajuato"/>
-                        
-                        <!-- Querétaro -->
-                        <path id="Querétaro" d="M 700,640 L 735,645 L 745,675 L 740,700 L 715,710 L 690,705 L 685,680 L 690,655 Z" data-state="Querétaro"/>
-                        
-                        <!-- Hidalgo -->
-                        <path id="Hidalgo" d="M 730,600 L 790,610 L 810,650 L 815,690 L 805,720 L 780,735 L 750,735 L 725,720 L 715,685 L 715,645 Z" data-state="Hidalgo"/>
-                        
-                        <!-- México -->
-                        <path id="México" d="M 695,725 L 755,735 L 770,770 L 770,805 L 750,825 L 720,830 L 690,820 L 670,790 L 665,755 Z" data-state="México"/>
-                        
-                        <!-- Ciudad de México -->
-                        <circle id="Ciudad de México" cx="728" cy="778" r="14" data-state="Ciudad de México"/>
-                        
-                        <!-- Tlaxcala -->
-                        <circle id="Tlaxcala" cx="795" cy="745" r="14" data-state="Tlaxcala"/>
-                        
-                        <!-- Puebla -->
-                        <path id="Puebla" d="M 780,690 L 855,700 L 885,745 L 895,795 L 885,840 L 855,860 L 815,865 L 775,850 L 755,810 L 750,760 Z" data-state="Puebla"/>
-                        
-                        <!-- Morelos -->
-                        <path id="Morelos" d="M 755,805 L 795,810 L 805,840 L 795,860 L 765,865 L 745,855 L 740,830 Z" data-state="Morelos"/>
-                        
-                        <!-- Guerrero -->
-                        <path id="Guerrero" d="M 625,840 L 745,860 L 785,905 L 800,955 L 785,995 L 750,1015 L 700,1010 L 650,985 L 610,945 L 595,890 Z" data-state="Guerrero"/>
-                        
-                        <!-- Veracruz -->
-                        <path id="Veracruz" d="M 820,510 L 890,530 L 925,585 L 950,650 L 970,720 L 975,785 L 965,845 L 940,880 L 905,895 L 865,885 L 830,855 L 805,805 L 785,740 L 770,670 L 760,600 L 765,545 Z" data-state="Veracruz"/>
-                        
-                        <!-- Oaxaca -->
-                        <path id="Oaxaca" d="M 805,1000 L 940,1010 L 1015,1045 L 1050,1095 L 1035,1135 L 995,1155 L 940,1150 L 880,1125 L 825,1085 L 790,1040 Z" data-state="Oaxaca"/>
-                        
-                        <!-- Chiapas -->
-                        <path id="Chiapas" d="M 1020,1050 L 1115,1060 L 1155,1105 L 1155,1155 L 1125,1180 L 1080,1185 L 1030,1170 L 1000,1130 L 1005,1085 Z" data-state="Chiapas"/>
-                        
-                        <!-- Tabasco -->
-                        <path id="Tabasco" d="M 1055,980 L 1135,990 L 1165,1030 L 1165,1075 L 1145,1105 L 1110,1115 L 1070,1105 L 1040,1070 L 1035,1020 Z" data-state="Tabasco"/>
-                        
-                        <!-- Campeche -->
-                        <path id="Campeche" d="M 1170,945 L 1255,955 L 1290,1000 L 1295,1050 L 1280,1090 L 1245,1105 L 1200,1105 L 1165,1080 L 1155,1030 L 1155,985 Z" data-state="Campeche"/>
-                        
-                        <!-- Yucatán -->
-                        <path id="Yucatán" d="M 1300,895 L 1390,905 L 1425,945 L 1430,995 L 1410,1025 L 1370,1035 L 1320,1030 L 1285,1005 L 1275,960 Z" data-state="Yucatán"/>
-                        
-                        <!-- Quintana Roo -->
-                        <path id="Quintana Roo" d="M 1435,910 L 1510,920 L 1540,970 L 1550,1025 L 1535,1075 L 1500,1095 L 1455,1095 L 1415,1065 L 1405,1010 L 1410,955 Z" data-state="Quintana Roo"/>
-                    </svg>
-                    
-                    <div style="text-align: center; margin-top: 16px; color: var(--color-text-secondary); font-size: var(--font-size-sm);">
-                        💡 <strong>Cliquez sur un état</strong> pour découvrir ses informations détaillées
-                    </div>
+                    <div id="map"></div>
+                </div>
+                <div style="text-align: center; margin-top: 16px; color: var(--color-text-secondary); font-size: var(--font-size-sm);">
+                    💡 <strong>Cliquez sur un état</strong> pour voir toutes ses informations détaillées
                 </div>
             </div>
 
@@ -1407,31 +1312,130 @@
             });
         }
 
-        // Créer des zones cliquables sur le SVG superposé
+        // Initialiser la carte Leaflet
+        let map;
         function createClickableMap() {
-            const svgElements = document.querySelectorAll('.map-overlay-svg path, .map-overlay-svg circle');
-
-            svgElements.forEach(element => {
-                const stateName = element.getAttribute('data-state');
-                
-                // Ajouter un événement de clic
-                element.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    if (statesData[stateName]) {
-                        displayStateInfo(stateName);
-                        console.log('✅ Ouverture de:', stateName);
-                    } else {
-                        console.log('❌ État non trouvé:', stateName);
-                    }
-                });
-
-                // Ajouter un titre au survol
-                const title = document.createElementNS('http://www.w3.org/2000/svg', 'title');
-                title.textContent = stateName;
-                element.appendChild(title);
+            // Initialiser la carte centrée sur le Mexique
+            map = L.map('map', {
+                center: [23.6345, -102.5528],
+                zoom: 5,
+                minZoom: 4,
+                maxZoom: 8,
+                zoomControl: true
             });
 
-            console.log(`✅ Carte interactive créée avec ${svgElements.length} états cliquables`);
+            // Ajouter un fond de carte personnalisé (CartoDB Voyager)
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+                subdomains: 'abcd',
+                maxZoom: 20
+            }).addTo(map);
+
+            // GeoJSON simplifié des états du Mexique (coordonnées approximatives)
+            const mexicoStatesGeoJSON = {
+                "type": "FeatureCollection",
+                "features": Object.keys(statesData).map(stateName => {
+                    // Coordonnées approximatives des centres des états
+                    const stateCoords = getStateCoordinates(stateName);
+                    return {
+                        "type": "Feature",
+                        "properties": {
+                            "name": stateName,
+                            "capitale": statesData[stateName].capitale
+                        },
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": stateCoords
+                        }
+                    };
+                })
+            };
+
+            // Ajouter les marqueurs pour chaque état
+            L.geoJSON(mexicoStatesGeoJSON, {
+                pointToLayer: function (feature, latlng) {
+                    return L.circleMarker(latlng, {
+                        radius: 12,
+                        fillColor: "#21808d",
+                        color: "#fff",
+                        weight: 2,
+                        opacity: 1,
+                        fillOpacity: 0.7
+                    });
+                },
+                onEachFeature: function (feature, layer) {
+                    const stateName = feature.properties.name;
+                    
+                    // Popup au survol
+                    layer.bindTooltip(stateName, {
+                        permanent: false,
+                        direction: 'top',
+                        className: 'state-tooltip'
+                    });
+                    
+                    // Clic pour afficher les détails
+                    layer.on('click', function () {
+                        displayStateInfo(stateName);
+                    });
+                    
+                    // Effet hover
+                    layer.on('mouseover', function () {
+                        this.setStyle({
+                            fillOpacity: 1,
+                            radius: 15
+                        });
+                    });
+                    
+                    layer.on('mouseout', function () {
+                        this.setStyle({
+                            fillOpacity: 0.7,
+                            radius: 12
+                        });
+                    });
+                }
+            }).addTo(map);
+
+            console.log(`✅ Carte Leaflet interactive créée avec ${Object.keys(statesData).length} états`);
+        }
+
+        // Coordonnées approximatives des états mexicains
+        function getStateCoordinates(stateName) {
+            const coordinates = {
+                "Aguascalientes": [-102.2916, 21.8853],
+                "Baja California": [-115.4683, 30.8406],
+                "Baja California Sur": [-111.6646, 26.0444],
+                "Campeche": [-90.5349, 19.8301],
+                "Chiapas": [-93.1168, 16.7569],
+                "Chihuahua": [-106.4245, 28.6353],
+                "Coahuila": [-101.8574, 27.0587],
+                "Colima": [-103.7226, 19.1223],
+                "Durango": [-104.6662, 24.5594],
+                "Guanajuato": [-101.2570, 21.0190],
+                "Guerrero": [-99.8992, 17.4392],
+                "Hidalgo": [-98.7624, 20.0911],
+                "Jalisco": [-103.3918, 20.6595],
+                "México": [-99.6571, 19.2821],
+                "Michoacán": [-101.7068, 19.5665],
+                "Morelos": [-99.2233, 18.6813],
+                "Nayarit": [-104.8455, 21.7514],
+                "Nuevo León": [-99.9962, 25.5922],
+                "Oaxaca": [-96.7266, 17.0732],
+                "Puebla": [-98.2063, 19.0414],
+                "Querétaro": [-100.3899, 20.5888],
+                "Quintana Roo": [-87.8653, 19.1817],
+                "San Luis Potosí": [-100.9855, 22.1565],
+                "Sinaloa": [-107.4795, 25.7903],
+                "Sonora": [-110.9559, 29.2972],
+                "Tabasco": [-92.9475, 17.8409],
+                "Tamaulipas": [-98.7624, 24.2669],
+                "Tlaxcala": [-98.2375, 19.3139],
+                "Veracruz": [-96.1429, 19.1738],
+                "Yucatán": [-89.0920, 20.7099],
+                "Zacatecas": [-102.5832, 22.7709],
+                "Ciudad de México": [-99.1332, 19.4326]
+            };
+            
+            return coordinates[stateName] || [-102.5528, 23.6345];
         }
 
         // ============================================
