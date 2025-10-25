@@ -240,9 +240,7 @@
             max-width: 100%;
             margin: 0 auto;
             position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            display: inline-block;
         }
 
         .map-image {
@@ -251,17 +249,42 @@
             display: block;
             border-radius: var(--radius-lg);
             box-shadow: var(--shadow-md);
-            transition: filter var(--duration-normal) var(--ease-standard);
         }
 
-        /* Image map hover effect */
-        .map-container:hover .map-image {
-            filter: brightness(1.05);
+        /* SVG overlay positioned on top of image */
+        .map-overlay-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
         }
 
-        /* Cursor pointer for clickable areas */
-        map area {
+        .map-overlay-svg path,
+        .map-overlay-svg polygon,
+        .map-overlay-svg circle {
+            fill: rgba(var(--color-teal-500-rgb), 0.1);
+            stroke: rgba(var(--color-teal-500-rgb), 0.4);
+            stroke-width: 2;
             cursor: pointer;
+            transition: all var(--duration-normal) var(--ease-standard);
+            pointer-events: all;
+        }
+
+        .map-overlay-svg path:hover,
+        .map-overlay-svg polygon:hover,
+        .map-overlay-svg circle:hover {
+            fill: rgba(var(--color-teal-500-rgb), 0.4);
+            stroke: var(--color-teal-500);
+            stroke-width: 3;
+            filter: drop-shadow(0 0 8px rgba(var(--color-teal-500-rgb), 0.6));
+        }
+
+        .map-overlay-svg path:active,
+        .map-overlay-svg polygon:active,
+        .map-overlay-svg circle:active {
+            fill: rgba(var(--color-teal-500-rgb), 0.6);
         }
 
         .state-overlay {
@@ -535,110 +558,113 @@
             <!-- Map Section -->
             <div class="map-section">
                 <div class="map-container">
+                    <!-- Image de fond -->
                     <img 
                         src="https://pplx-res.cloudinary.com/image/upload/v1761423488/pplx_project_search_images/b618a28b6f97d31b887e7b74ca3c15c067de823c.png" 
                         alt="Carte du Mexique" 
                         class="map-image"
                         id="mapImage"
-                        usemap="#mexicomap"
                     >
-                    <map name="mexicomap">
-                        <!-- Baja California (côte nord-ouest) -->
-                        <area shape="poly" coords="50,120,90,120,100,180,105,240,95,280,75,270,60,220,50,180" href="#" alt="Baja California" data-state="Baja California">
+                    
+                    <!-- SVG superposé avec zones cliquables -->
+                    <svg class="map-overlay-svg" viewBox="0 0 1260 840" preserveAspectRatio="xMidYMid meet">
+                        <!-- Baja California -->
+                        <path id="Baja California" d="M 70,160 L 115,160 L 125,240 L 132,320 L 125,380 L 100,365 L 80,295 L 70,240 Z" data-state="Baja California"/>
                         
-                        <!-- Baja California Sur (côte sud-ouest) -->
-                        <area shape="poly" coords="75,280,95,290,90,350,85,400,70,390,60,340,65,300" href="#" alt="Baja California Sur" data-state="Baja California Sur">
+                        <!-- Baja California Sur -->
+                        <path id="Baja California Sur" d="M 100,380 L 125,395 L 118,470 L 112,540 L 92,525 L 80,455 L 87,405 Z" data-state="Baja California Sur"/>
                         
                         <!-- Sonora -->
-                        <area shape="poly" coords="110,130,190,140,210,180,220,240,200,270,180,280,150,270,120,240,110,190" href="#" alt="Sonora" data-state="Sonora">
+                        <path id="Sonora" d="M 145,175 L 250,185 L 275,240 L 290,320 L 265,360 L 240,375 L 200,360 L 160,320 L 145,255 Z" data-state="Sonora"/>
                         
                         <!-- Chihuahua -->
-                        <area shape="poly" coords="220,150,340,160,360,220,355,270,330,290,290,280,260,270,230,250,220,200" href="#" alt="Chihuahua" data-state="Chihuahua">
+                        <path id="Chihuahua" d="M 290,200 L 450,215 L 475,295 L 470,365 L 435,390 L 385,375 L 345,360 L 305,335 L 290,265 Z" data-state="Chihuahua"/>
                         
                         <!-- Sinaloa -->
-                        <area shape="poly" coords="140,280,200,290,220,340,230,380,210,400,180,390,150,360,140,320" href="#" alt="Sinaloa" data-state="Sinaloa">
+                        <path id="Sinaloa" d="M 185,375 L 265,390 L 290,455 L 305,510 L 280,540 L 240,525 L 200,485 L 185,430 Z" data-state="Sinaloa"/>
                         
                         <!-- Durango -->
-                        <area shape="poly" coords="230,270,290,280,310,320,315,360,295,380,265,370,240,350,225,310" href="#" alt="Durango" data-state="Durango">
+                        <path id="Durango" d="M 305,360 L 385,375 L 410,430 L 418,485 L 390,510 L 350,495 L 318,470 L 300,420 Z" data-state="Durango"/>
                         
                         <!-- Coahuila -->
-                        <area shape="poly" coords="360,200,460,210,480,260,475,300,450,310,410,300,370,280,360,240" href="#" alt="Coahuila" data-state="Coahuila">
+                        <path id="Coahuila" d="M 475,270 L 610,285 L 635,350 L 630,405 L 595,420 L 545,405 L 490,380 L 475,320 Z" data-state="Coahuila"/>
                         
                         <!-- Nuevo León -->
-                        <area shape="poly" coords="480,230,520,240,530,280,525,310,500,320,475,305,470,270" href="#" alt="Nuevo León" data-state="Nuevo León">
+                        <path id="Nuevo León" d="M 635,310 L 690,325 L 703,375 L 696,420 L 665,435 L 630,415 L 623,365 Z" data-state="Nuevo León"/>
                         
                         <!-- Tamaulipas -->
-                        <area shape="poly" coords="530,240,600,260,620,320,615,370,590,380,560,360,540,320,530,280" href="#" alt="Tamaulipas" data-state="Tamaulipas">
+                        <path id="Tamaulipas" d="M 703,325 L 795,350 L 823,430 L 815,500 L 783,515 L 743,485 L 715,430 L 703,375 Z" data-state="Tamaulipas"/>
                         
                         <!-- Zacatecas -->
-                        <area shape="poly" coords="310,330,370,340,390,380,385,410,360,420,330,410,315,380" href="#" alt="Zacatecas" data-state="Zacatecas">
+                        <path id="Zacatecas" d="M 410,445 L 490,455 L 518,510 L 512,550 L 478,565 L 438,550 L 418,515 Z" data-state="Zacatecas"/>
                         
                         <!-- San Luis Potosí -->
-                        <area shape="poly" coords="390,330,460,340,480,380,485,420,460,440,430,430,400,410,390,370" href="#" alt="San Luis Potosí" data-state="San Luis Potosí">
+                        <path id="San Luis Potosí" d="M 518,445 L 610,455 L 637,510 L 643,565 L 610,590 L 570,575 L 530,555 L 518,500 Z" data-state="San Luis Potosí"/>
                         
                         <!-- Nayarit -->
-                        <area shape="poly" coords="180,390,230,400,250,440,245,470,220,475,190,460,175,430" href="#" alt="Nayarit" data-state="Nayarit">
+                        <path id="Nayarit" d="M 240,525 L 305,540 L 332,590 L 325,635 L 292,645 L 252,620 L 232,575 Z" data-state="Nayarit"/>
                         
-                        <!-- Aguascalientes (petit état) -->
-                        <area shape="circle" coords="340,390,15" href="#" alt="Aguascalientes" data-state="Aguascalientes">
+                        <!-- Aguascalientes -->
+                        <circle id="Aguascalientes" cx="452" cy="525" r="20" data-state="Aguascalientes"/>
                         
                         <!-- Jalisco -->
-                        <area shape="poly" coords="230,410,300,420,325,460,330,500,310,520,270,510,245,490,230,460" href="#" alt="Jalisco" data-state="Jalisco">
+                        <path id="Jalisco" d="M 305,555 L 398,565 L 432,620 L 440,675 L 412,700 L 358,685 L 325,660 L 305,620 Z" data-state="Jalisco"/>
                         
-                        <!-- Colima (petit état côtier) -->
-                        <area shape="poly" coords="270,510,300,520,305,545,290,555,270,540" href="#" alt="Colima" data-state="Colima">
+                        <!-- Colima -->
+                        <path id="Colima" d="M 358,685 L 398,700 L 405,735 L 385,750 L 358,725 Z" data-state="Colima"/>
                         
                         <!-- Michoacán -->
-                        <area shape="poly" coords="310,460,380,470,405,510,410,540,390,555,350,550,320,530,305,500" href="#" alt="Michoacán" data-state="Michoacán">
+                        <path id="Michoacán" d="M 412,620 L 505,630 L 538,685 L 545,730 L 518,750 L 465,740 L 425,710 L 405,670 Z" data-state="Michoacán"/>
                         
                         <!-- Guanajuato -->
-                        <area shape="poly" coords="360,420,420,430,440,460,435,490,410,495,380,485,365,460" href="#" alt="Guanajuato" data-state="Guanajuato">
+                        <path id="Guanajuato" d="M 478,565 L 558,575 L 585,620 L 578,660 L 545,670 L 505,655 L 485,620 Z" data-state="Guanajuato"/>
                         
-                        <!-- Querétaro (petit état) -->
-                        <area shape="poly" coords="435,440,465,445,470,470,460,485,440,475,435,460" href="#" alt="Querétaro" data-state="Querétaro">
+                        <!-- Querétaro -->
+                        <path id="Querétaro" d="M 578,595 L 618,600 L 625,635 L 615,655 L 585,645 L 578,625 Z" data-state="Querétaro"/>
                         
                         <!-- Hidalgo -->
-                        <area shape="poly" coords="460,420,510,430,525,460,520,485,495,495,470,485,460,455" href="#" alt="Hidalgo" data-state="Hidalgo">
+                        <path id="Hidalgo" d="M 610,565 L 678,575 L 697,620 L 690,655 L 658,670 L 625,655 L 610,615 Z" data-state="Hidalgo"/>
                         
                         <!-- México -->
-                        <area shape="poly" coords="435,490,485,495,495,530,485,550,460,555,440,540,430,515" href="#" alt="México" data-state="México">
+                        <path id="México" d="M 578,660 L 645,670 L 658,715 L 645,745 L 610,755 L 585,730 L 570,695 Z" data-state="México"/>
                         
-                        <!-- Ciudad de México (très petit) -->
-                        <area shape="circle" coords="470,520,12" href="#" alt="Ciudad de México" data-state="Ciudad de México">
+                        <!-- Ciudad de México -->
+                        <circle id="Ciudad de México" cx="625" cy="705" r="16" data-state="Ciudad de México"/>
                         
-                        <!-- Tlaxcala (très petit) -->
-                        <area shape="circle" coords="525,500,12" href="#" alt="Tlaxcala" data-state="Tlaxcala">
+                        <!-- Tlaxcala -->
+                        <circle id="Tlaxcala" cx="698" cy="675" r="16" data-state="Tlaxcala"/>
                         
                         <!-- Puebla -->
-                        <area shape="poly" coords="495,480,560,490,585,530,580,570,550,580,510,565,495,530" href="#" alt="Puebla" data-state="Puebla">
+                        <path id="Puebla" d="M 658,645 L 743,655 L 778,715 L 770,770 L 730,785 L 678,765 L 658,715 Z" data-state="Puebla"/>
                         
-                        <!-- Morelos (petit état) -->
-                        <area shape="poly" coords="470,540,505,545,510,570,495,580,470,570,465,555" href="#" alt="Morelos" data-state="Morelos">
+                        <!-- Morelos -->
+                        <path id="Morelos" d="M 625,730 L 672,735 L 678,770 L 658,785 L 625,775 L 618,750 Z" data-state="Morelos"/>
                         
                         <!-- Guerrero -->
-                        <area shape="poly" coords="390,560,480,575,510,620,520,660,490,680,440,670,400,640,385,600" href="#" alt="Guerrero" data-state="Guerrero">
+                        <path id="Guerrero" d="M 518,755 L 638,780 L 678,835 L 690,890 L 650,915 L 585,900 L 532,855 L 510,805 Z" data-state="Guerrero"/>
                         
-                        <!-- Veracruz (long état côtier) -->
-                        <area shape="poly" coords="520,360,600,380,630,430,650,490,660,550,650,600,620,610,580,590,550,550,530,490,515,430" href="#" alt="Veracruz" data-state="Veracruz">
+                        <!-- Veracruz -->
+                        <path id="Veracruz" d="M 690,485 L 795,515 L 837,580 L 867,660 L 882,740 L 867,810 L 823,825 L 770,795 L 730,740 L 703,655 L 683,580 Z" data-state="Veracruz"/>
                         
                         <!-- Oaxaca -->
-                        <area shape="poly" coords="520,670,630,680,690,710,710,750,680,770,620,760,560,730,520,700" href="#" alt="Oaxaca" data-state="Oaxaca">
+                        <path id="Oaxaca" d="M 690,905 L 837,915 L 918,960 L 945,1015 L 903,1040 L 823,1025 L 745,985 L 690,945 Z" data-state="Oaxaca"/>
                         
                         <!-- Chiapas -->
-                        <area shape="poly" coords="690,710,770,720,800,760,795,800,760,810,710,795,690,765" href="#" alt="Chiapas" data-state="Chiapas">
+                        <path id="Chiapas" d="M 918,960 L 1023,970 L 1063,1025 L 1055,1080 L 1008,1095 L 945,1075 L 918,1030 Z" data-state="Chiapas"/>
                         
                         <!-- Tabasco -->
-                        <area shape="poly" coords="710,660,780,670,800,700,790,730,760,735,720,720,710,690" href="#" alt="Tabasco" data-state="Tabasco">
+                        <path id="Tabasco" d="M 945,890 L 1035,900 L 1063,945 L 1050,985 L 1008,995 L 958,980 L 945,935 Z" data-state="Tabasco"/>
                         
                         <!-- Campeche -->
-                        <area shape="poly" coords="790,640,860,650,885,700,880,740,850,750,810,735,795,690" href="#" alt="Campeche" data-state="Campeche">
+                        <path id="Campeche" d="M 1050,865 L 1143,875 L 1178,945 L 1170,1000 L 1128,1015 L 1078,995 L 1055,935 Z" data-state="Campeche"/>
                         
                         <!-- Yucatán -->
-                        <area shape="poly" coords="870,600,950,610,975,650,960,685,920,690,880,675,870,640" href="#" alt="Yucatán" data-state="Yucatán">
+                        <path id="Yucatán" d="M 1155,810 L 1263,820 L 1295,875 L 1275,925 L 1223,935 L 1170,915 L 1155,865 Z" data-state="Yucatán"/>
                         
                         <!-- Quintana Roo -->
-                        <area shape="poly" coords="960,610,1020,625,1035,685,1020,730,980,735,950,710,955,660" href="#" alt="Quintana Roo" data-state="Quintana Roo">
-                    </map>
+                        <path id="Quintana Roo" d="M 1275,820 L 1355,835 L 1378,925 L 1355,985 L 1303,995 L 1263,960 L 1268,890 Z" data-state="Quintana Roo"/>
+                    </svg>
+                    
                     <div style="text-align: center; margin-top: 16px; color: var(--color-text-secondary); font-size: var(--font-size-sm);">
                         💡 <strong>Cliquez sur un état</strong> pour découvrir ses informations détaillées
                     </div>
@@ -1381,28 +1407,31 @@
             });
         }
 
-        // Créer des zones cliquables sur la carte image
+        // Créer des zones cliquables sur le SVG superposé
         function createClickableMap() {
-            const areas = document.querySelectorAll('map[name="mexicomap"] area');
+            const svgElements = document.querySelectorAll('.map-overlay-svg path, .map-overlay-svg circle');
 
-            areas.forEach(area => {
-                const stateName = area.getAttribute('data-state');
+            svgElements.forEach(element => {
+                const stateName = element.getAttribute('data-state');
                 
                 // Ajouter un événement de clic
-                area.addEventListener('click', (e) => {
+                element.addEventListener('click', (e) => {
                     e.preventDefault();
                     if (statesData[stateName]) {
                         displayStateInfo(stateName);
+                        console.log('✅ Ouverture de:', stateName);
                     } else {
-                        console.log('État non trouvé:', stateName);
+                        console.log('❌ État non trouvé:', stateName);
                     }
                 });
 
-                // Ajouter un style de curseur
-                area.style.cursor = 'pointer';
+                // Ajouter un titre au survol
+                const title = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+                title.textContent = stateName;
+                element.appendChild(title);
             });
 
-            console.log(`✅ Carte interactive créée avec ${areas.length} états cliquables`);
+            console.log(`✅ Carte interactive créée avec ${svgElements.length} états cliquables`);
         }
 
         // ============================================
