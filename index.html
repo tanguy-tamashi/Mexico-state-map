@@ -253,6 +253,43 @@
             box-shadow: var(--shadow-md);
         }
 
+        /* SVG Map Styles */
+        .mexico-map {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+        }
+
+        .mexico-map path,
+        .mexico-map polygon,
+        .mexico-map circle {
+            fill: var(--color-teal-500);
+            stroke: var(--color-surface);
+            stroke-width: 1.5;
+            cursor: pointer;
+            transition: all var(--duration-normal) var(--ease-standard);
+            opacity: 0.7;
+        }
+
+        .mexico-map path:hover,
+        .mexico-map polygon:hover,
+        .mexico-map circle:hover {
+            fill: var(--color-primary-hover);
+            opacity: 0.9;
+            stroke-width: 2.5;
+        }
+
+        .mexico-map text {
+            fill: var(--color-white);
+            font-size: 10px;
+            font-weight: var(--font-weight-semibold);
+            pointer-events: none;
+            text-anchor: middle;
+            font-family: var(--font-family-base);
+        }
+
         .state-overlay {
             position: absolute;
             cursor: pointer;
@@ -524,12 +561,58 @@
             <!-- Map Section -->
             <div class="map-section">
                 <div class="map-container">
-                    <img 
-                        src="https://pplx-res.cloudinary.com/image/upload/v1761423488/pplx_project_search_images/b618a28b6f97d31b887e7b74ca3c15c067de823c.png" 
-                        alt="Carte du Mexique" 
-                        class="map-image"
-                        id="mapImage"
-                    >
+                    <svg id="mexicoMap" class="mexico-map" viewBox="0 0 1000 600" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Background -->
+                        <rect width="1000" height="600" fill="var(--color-background)" opacity="0.3"/>
+                        
+                        <!-- États du Mexique (formes simplifiées) -->
+                        <!-- Région Nord -->
+                        <path id="Baja California" d="M 50,100 L 80,100 L 85,200 L 75,250 L 50,230 Z" class="state"/>
+                        <path id="Baja California Sur" d="M 50,230 L 75,250 L 70,350 L 40,330 Z" class="state"/>
+                        <path id="Sonora" d="M 85,100 L 150,100 L 160,150 L 155,220 L 130,230 L 85,200 Z" class="state"/>
+                        <path id="Chihuahua" d="M 160,120 L 250,120 L 260,200 L 240,220 L 200,220 L 160,180 Z" class="state"/>
+                        <path id="Coahuila" d="M 260,130 L 340,140 L 350,200 L 310,220 L 260,210 Z" class="state"/>
+                        <path id="Nuevo León" d="M 350,150 L 390,160 L 395,210 L 360,220 L 350,200 Z" class="state"/>
+                        <path id="Tamaulipas" d="M 395,160 L 440,170 L 450,230 L 410,240 L 395,210 Z" class="state"/>
+                        
+                        <!-- Région Centre-Nord -->
+                        <path id="Sinaloa" d="M 130,230 L 180,240 L 190,310 L 150,320 L 130,280 Z" class="state"/>
+                        <path id="Durango" d="M 180,240 L 240,240 L 245,300 L 210,310 L 190,310 Z" class="state"/>
+                        <path id="Zacatecas" d="M 245,260 L 300,265 L 305,315 L 270,325 L 245,310 Z" class="state"/>
+                        <path id="San Luis Potosí" d="M 305,250 L 360,255 L 370,310 L 330,325 L 305,315 Z" class="state"/>
+                        
+                        <!-- Région Centre -->
+                        <path id="Nayarit" d="M 150,320 L 190,330 L 200,380 L 165,385 Z" class="state"/>
+                        <path id="Aguascalientes" d="M 235,310 L 255,310 L 258,330 L 238,335 Z" class="state"/>
+                        <path id="Jalisco" d="M 190,340 L 250,345 L 260,400 L 210,410 L 190,385 Z" class="state"/>
+                        <path id="Guanajuato" d="M 260,315 L 310,318 L 315,365 L 275,375 L 260,355 Z" class="state"/>
+                        <path id="Querétaro" d="M 315,330 L 345,332 L 350,360 L 325,365 L 315,355 Z" class="state"/>
+                        <path id="Hidalgo" d="M 350,330 L 385,335 L 390,365 L 360,370 L 350,360 Z" class="state"/>
+                        <path id="Veracruz" d="M 390,280 L 450,290 L 460,400 L 410,410 L 390,370 Z" class="state"/>
+                        
+                        <!-- Région Centre (suite) -->
+                        <path id="Colima" d="M 200,410 L 230,415 L 235,450 L 205,455 Z" class="state"/>
+                        <path id="Michoacán" d="M 230,380 L 290,385 L 300,440 L 245,450 L 230,425 Z" class="state"/>
+                        <path id="México" d="M 300,365 L 350,370 L 355,410 L 310,420 L 300,395 Z" class="state"/>
+                        <path id="Ciudad de México" d="M 325,390 L 340,390 L 340,405 L 325,405 Z" class="state"/>
+                        <path id="Tlaxcala" d="M 355,370 L 375,372 L 377,390 L 357,392 Z" class="state"/>
+                        <path id="Puebla" d="M 355,375 L 410,380 L 420,430 L 370,440 L 355,410 Z" class="state"/>
+                        <path id="Morelos" d="M 330,410 L 365,415 L 368,440 L 340,445 Z" class="state"/>
+                        <path id="Guerrero" d="M 270,440 L 340,445 L 360,500 L 300,510 L 270,485 Z" class="state"/>
+                        
+                        <!-- Région Sud -->
+                        <path id="Oaxaca" d="M 360,440 L 470,450 L 490,520 L 420,530 L 360,510 Z" class="state"/>
+                        <path id="Chiapas" d="M 470,480 L 530,490 L 540,540 L 480,550 L 470,520 Z" class="state"/>
+                        <path id="Tabasco" d="M 490,460 L 550,465 L 560,505 L 510,515 L 490,490 Z" class="state"/>
+                        
+                        <!-- Région Péninsule du Yucatán -->
+                        <path id="Campeche" d="M 560,440 L 620,445 L 630,500 L 575,510 L 560,475 Z" class="state"/>
+                        <path id="Yucatán" d="M 630,400 L 700,410 L 710,460 L 650,470 L 630,440 Z" class="state"/>
+                        <path id="Quintana Roo" d="M 710,410 L 760,420 L 770,480 L 720,490 L 710,460 Z" class="state"/>
+                    </svg>
+                    <div style="text-align: center; margin-top: 16px; color: var(--color-text-secondary); font-size: var(--font-size-sm);">
+                        💡 <strong>Cliquez sur un état</strong> pour découvrir ses informations détaillées
+                    </div>
                 </div>
             </div>
 
@@ -1269,23 +1352,37 @@
             });
         }
 
-        // Créer des zones cliquables sur la carte
+        // Créer des zones cliquables sur la carte SVG
         function createClickableMap() {
-            const mapContainer = document.querySelector('.map-container');
-            const mapImage = document.getElementById('mapImage');
+            const svg = document.getElementById('mexicoMap');
+            const statePaths = svg.querySelectorAll('path[id]');
 
-            // Zone d'information pour indiquer qu'on peut cliquer
-            const infoDiv = document.createElement('div');
-            infoDiv.style.cssText = 'text-align: center; margin-top: 16px; color: var(--color-text-secondary); font-size: var(--font-size-sm);';
-            infoDiv.innerHTML = '💡 <strong>Astuce :</strong> Utilisez la barre de recherche ci-dessus pour explorer les 32 États du Mexique';
-            mapContainer.appendChild(infoDiv);
+            statePaths.forEach(path => {
+                const stateName = path.getAttribute('id');
+                
+                // Ajouter un événement de clic
+                path.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    if (statesData[stateName]) {
+                        displayStateInfo(stateName);
+                    }
+                });
 
-            // Pour une vraie carte interactive, on utiliserait une carte SVG ou des coordonnées précises
-            // Ici, on fournit une alternative avec la recherche
-            mapImage.style.cursor = 'help';
-            mapImage.addEventListener('click', () => {
-                alert('Utilisez la barre de recherche pour sélectionner un État et voir ses détails complets!');
+                // Ajouter un effet de survol avec titre
+                path.setAttribute('title', stateName);
+                
+                // Animation de survol améliorée
+                path.addEventListener('mouseenter', () => {
+                    path.style.transform = 'scale(1.02)';
+                    path.style.transformOrigin = 'center';
+                });
+                
+                path.addEventListener('mouseleave', () => {
+                    path.style.transform = 'scale(1)';
+                });
             });
+
+            console.log(`✅ Carte interactive créée avec ${statePaths.length} états cliquables`);
         }
 
         // ============================================
