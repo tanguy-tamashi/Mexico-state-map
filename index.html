@@ -251,43 +251,17 @@
             display: block;
             border-radius: var(--radius-lg);
             box-shadow: var(--shadow-md);
+            transition: filter var(--duration-normal) var(--ease-standard);
         }
 
-        /* SVG Map Styles */
-        .mexico-map {
-            max-width: 100%;
-            height: auto;
-            display: block;
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-md);
+        /* Image map hover effect */
+        .map-container:hover .map-image {
+            filter: brightness(1.05);
         }
 
-        .mexico-map path,
-        .mexico-map polygon,
-        .mexico-map circle {
-            fill: var(--color-teal-500);
-            stroke: var(--color-surface);
-            stroke-width: 1.5;
+        /* Cursor pointer for clickable areas */
+        map area {
             cursor: pointer;
-            transition: all var(--duration-normal) var(--ease-standard);
-            opacity: 0.7;
-        }
-
-        .mexico-map path:hover,
-        .mexico-map polygon:hover,
-        .mexico-map circle:hover {
-            fill: var(--color-primary-hover);
-            opacity: 0.9;
-            stroke-width: 2.5;
-        }
-
-        .mexico-map text {
-            fill: var(--color-white);
-            font-size: 10px;
-            font-weight: var(--font-weight-semibold);
-            pointer-events: none;
-            text-anchor: middle;
-            font-family: var(--font-family-base);
         }
 
         .state-overlay {
@@ -561,55 +535,110 @@
             <!-- Map Section -->
             <div class="map-section">
                 <div class="map-container">
-                    <svg id="mexicoMap" class="mexico-map" viewBox="0 0 1000 600" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Background -->
-                        <rect width="1000" height="600" fill="var(--color-background)" opacity="0.3"/>
+                    <img 
+                        src="https://pplx-res.cloudinary.com/image/upload/v1761423488/pplx_project_search_images/b618a28b6f97d31b887e7b74ca3c15c067de823c.png" 
+                        alt="Carte du Mexique" 
+                        class="map-image"
+                        id="mapImage"
+                        usemap="#mexicomap"
+                    >
+                    <map name="mexicomap">
+                        <!-- Baja California (côte nord-ouest) -->
+                        <area shape="poly" coords="50,120,90,120,100,180,105,240,95,280,75,270,60,220,50,180" href="#" alt="Baja California" data-state="Baja California">
                         
-                        <!-- États du Mexique (formes simplifiées) -->
-                        <!-- Région Nord -->
-                        <path id="Baja California" d="M 50,100 L 80,100 L 85,200 L 75,250 L 50,230 Z" class="state"/>
-                        <path id="Baja California Sur" d="M 50,230 L 75,250 L 70,350 L 40,330 Z" class="state"/>
-                        <path id="Sonora" d="M 85,100 L 150,100 L 160,150 L 155,220 L 130,230 L 85,200 Z" class="state"/>
-                        <path id="Chihuahua" d="M 160,120 L 250,120 L 260,200 L 240,220 L 200,220 L 160,180 Z" class="state"/>
-                        <path id="Coahuila" d="M 260,130 L 340,140 L 350,200 L 310,220 L 260,210 Z" class="state"/>
-                        <path id="Nuevo León" d="M 350,150 L 390,160 L 395,210 L 360,220 L 350,200 Z" class="state"/>
-                        <path id="Tamaulipas" d="M 395,160 L 440,170 L 450,230 L 410,240 L 395,210 Z" class="state"/>
+                        <!-- Baja California Sur (côte sud-ouest) -->
+                        <area shape="poly" coords="75,280,95,290,90,350,85,400,70,390,60,340,65,300" href="#" alt="Baja California Sur" data-state="Baja California Sur">
                         
-                        <!-- Région Centre-Nord -->
-                        <path id="Sinaloa" d="M 130,230 L 180,240 L 190,310 L 150,320 L 130,280 Z" class="state"/>
-                        <path id="Durango" d="M 180,240 L 240,240 L 245,300 L 210,310 L 190,310 Z" class="state"/>
-                        <path id="Zacatecas" d="M 245,260 L 300,265 L 305,315 L 270,325 L 245,310 Z" class="state"/>
-                        <path id="San Luis Potosí" d="M 305,250 L 360,255 L 370,310 L 330,325 L 305,315 Z" class="state"/>
+                        <!-- Sonora -->
+                        <area shape="poly" coords="110,130,190,140,210,180,220,240,200,270,180,280,150,270,120,240,110,190" href="#" alt="Sonora" data-state="Sonora">
                         
-                        <!-- Région Centre -->
-                        <path id="Nayarit" d="M 150,320 L 190,330 L 200,380 L 165,385 Z" class="state"/>
-                        <path id="Aguascalientes" d="M 235,310 L 255,310 L 258,330 L 238,335 Z" class="state"/>
-                        <path id="Jalisco" d="M 190,340 L 250,345 L 260,400 L 210,410 L 190,385 Z" class="state"/>
-                        <path id="Guanajuato" d="M 260,315 L 310,318 L 315,365 L 275,375 L 260,355 Z" class="state"/>
-                        <path id="Querétaro" d="M 315,330 L 345,332 L 350,360 L 325,365 L 315,355 Z" class="state"/>
-                        <path id="Hidalgo" d="M 350,330 L 385,335 L 390,365 L 360,370 L 350,360 Z" class="state"/>
-                        <path id="Veracruz" d="M 390,280 L 450,290 L 460,400 L 410,410 L 390,370 Z" class="state"/>
+                        <!-- Chihuahua -->
+                        <area shape="poly" coords="220,150,340,160,360,220,355,270,330,290,290,280,260,270,230,250,220,200" href="#" alt="Chihuahua" data-state="Chihuahua">
                         
-                        <!-- Région Centre (suite) -->
-                        <path id="Colima" d="M 200,410 L 230,415 L 235,450 L 205,455 Z" class="state"/>
-                        <path id="Michoacán" d="M 230,380 L 290,385 L 300,440 L 245,450 L 230,425 Z" class="state"/>
-                        <path id="México" d="M 300,365 L 350,370 L 355,410 L 310,420 L 300,395 Z" class="state"/>
-                        <path id="Ciudad de México" d="M 325,390 L 340,390 L 340,405 L 325,405 Z" class="state"/>
-                        <path id="Tlaxcala" d="M 355,370 L 375,372 L 377,390 L 357,392 Z" class="state"/>
-                        <path id="Puebla" d="M 355,375 L 410,380 L 420,430 L 370,440 L 355,410 Z" class="state"/>
-                        <path id="Morelos" d="M 330,410 L 365,415 L 368,440 L 340,445 Z" class="state"/>
-                        <path id="Guerrero" d="M 270,440 L 340,445 L 360,500 L 300,510 L 270,485 Z" class="state"/>
+                        <!-- Sinaloa -->
+                        <area shape="poly" coords="140,280,200,290,220,340,230,380,210,400,180,390,150,360,140,320" href="#" alt="Sinaloa" data-state="Sinaloa">
                         
-                        <!-- Région Sud -->
-                        <path id="Oaxaca" d="M 360,440 L 470,450 L 490,520 L 420,530 L 360,510 Z" class="state"/>
-                        <path id="Chiapas" d="M 470,480 L 530,490 L 540,540 L 480,550 L 470,520 Z" class="state"/>
-                        <path id="Tabasco" d="M 490,460 L 550,465 L 560,505 L 510,515 L 490,490 Z" class="state"/>
+                        <!-- Durango -->
+                        <area shape="poly" coords="230,270,290,280,310,320,315,360,295,380,265,370,240,350,225,310" href="#" alt="Durango" data-state="Durango">
                         
-                        <!-- Région Péninsule du Yucatán -->
-                        <path id="Campeche" d="M 560,440 L 620,445 L 630,500 L 575,510 L 560,475 Z" class="state"/>
-                        <path id="Yucatán" d="M 630,400 L 700,410 L 710,460 L 650,470 L 630,440 Z" class="state"/>
-                        <path id="Quintana Roo" d="M 710,410 L 760,420 L 770,480 L 720,490 L 710,460 Z" class="state"/>
-                    </svg>
+                        <!-- Coahuila -->
+                        <area shape="poly" coords="360,200,460,210,480,260,475,300,450,310,410,300,370,280,360,240" href="#" alt="Coahuila" data-state="Coahuila">
+                        
+                        <!-- Nuevo León -->
+                        <area shape="poly" coords="480,230,520,240,530,280,525,310,500,320,475,305,470,270" href="#" alt="Nuevo León" data-state="Nuevo León">
+                        
+                        <!-- Tamaulipas -->
+                        <area shape="poly" coords="530,240,600,260,620,320,615,370,590,380,560,360,540,320,530,280" href="#" alt="Tamaulipas" data-state="Tamaulipas">
+                        
+                        <!-- Zacatecas -->
+                        <area shape="poly" coords="310,330,370,340,390,380,385,410,360,420,330,410,315,380" href="#" alt="Zacatecas" data-state="Zacatecas">
+                        
+                        <!-- San Luis Potosí -->
+                        <area shape="poly" coords="390,330,460,340,480,380,485,420,460,440,430,430,400,410,390,370" href="#" alt="San Luis Potosí" data-state="San Luis Potosí">
+                        
+                        <!-- Nayarit -->
+                        <area shape="poly" coords="180,390,230,400,250,440,245,470,220,475,190,460,175,430" href="#" alt="Nayarit" data-state="Nayarit">
+                        
+                        <!-- Aguascalientes (petit état) -->
+                        <area shape="circle" coords="340,390,15" href="#" alt="Aguascalientes" data-state="Aguascalientes">
+                        
+                        <!-- Jalisco -->
+                        <area shape="poly" coords="230,410,300,420,325,460,330,500,310,520,270,510,245,490,230,460" href="#" alt="Jalisco" data-state="Jalisco">
+                        
+                        <!-- Colima (petit état côtier) -->
+                        <area shape="poly" coords="270,510,300,520,305,545,290,555,270,540" href="#" alt="Colima" data-state="Colima">
+                        
+                        <!-- Michoacán -->
+                        <area shape="poly" coords="310,460,380,470,405,510,410,540,390,555,350,550,320,530,305,500" href="#" alt="Michoacán" data-state="Michoacán">
+                        
+                        <!-- Guanajuato -->
+                        <area shape="poly" coords="360,420,420,430,440,460,435,490,410,495,380,485,365,460" href="#" alt="Guanajuato" data-state="Guanajuato">
+                        
+                        <!-- Querétaro (petit état) -->
+                        <area shape="poly" coords="435,440,465,445,470,470,460,485,440,475,435,460" href="#" alt="Querétaro" data-state="Querétaro">
+                        
+                        <!-- Hidalgo -->
+                        <area shape="poly" coords="460,420,510,430,525,460,520,485,495,495,470,485,460,455" href="#" alt="Hidalgo" data-state="Hidalgo">
+                        
+                        <!-- México -->
+                        <area shape="poly" coords="435,490,485,495,495,530,485,550,460,555,440,540,430,515" href="#" alt="México" data-state="México">
+                        
+                        <!-- Ciudad de México (très petit) -->
+                        <area shape="circle" coords="470,520,12" href="#" alt="Ciudad de México" data-state="Ciudad de México">
+                        
+                        <!-- Tlaxcala (très petit) -->
+                        <area shape="circle" coords="525,500,12" href="#" alt="Tlaxcala" data-state="Tlaxcala">
+                        
+                        <!-- Puebla -->
+                        <area shape="poly" coords="495,480,560,490,585,530,580,570,550,580,510,565,495,530" href="#" alt="Puebla" data-state="Puebla">
+                        
+                        <!-- Morelos (petit état) -->
+                        <area shape="poly" coords="470,540,505,545,510,570,495,580,470,570,465,555" href="#" alt="Morelos" data-state="Morelos">
+                        
+                        <!-- Guerrero -->
+                        <area shape="poly" coords="390,560,480,575,510,620,520,660,490,680,440,670,400,640,385,600" href="#" alt="Guerrero" data-state="Guerrero">
+                        
+                        <!-- Veracruz (long état côtier) -->
+                        <area shape="poly" coords="520,360,600,380,630,430,650,490,660,550,650,600,620,610,580,590,550,550,530,490,515,430" href="#" alt="Veracruz" data-state="Veracruz">
+                        
+                        <!-- Oaxaca -->
+                        <area shape="poly" coords="520,670,630,680,690,710,710,750,680,770,620,760,560,730,520,700" href="#" alt="Oaxaca" data-state="Oaxaca">
+                        
+                        <!-- Chiapas -->
+                        <area shape="poly" coords="690,710,770,720,800,760,795,800,760,810,710,795,690,765" href="#" alt="Chiapas" data-state="Chiapas">
+                        
+                        <!-- Tabasco -->
+                        <area shape="poly" coords="710,660,780,670,800,700,790,730,760,735,720,720,710,690" href="#" alt="Tabasco" data-state="Tabasco">
+                        
+                        <!-- Campeche -->
+                        <area shape="poly" coords="790,640,860,650,885,700,880,740,850,750,810,735,795,690" href="#" alt="Campeche" data-state="Campeche">
+                        
+                        <!-- Yucatán -->
+                        <area shape="poly" coords="870,600,950,610,975,650,960,685,920,690,880,675,870,640" href="#" alt="Yucatán" data-state="Yucatán">
+                        
+                        <!-- Quintana Roo -->
+                        <area shape="poly" coords="960,610,1020,625,1035,685,1020,730,980,735,950,710,955,660" href="#" alt="Quintana Roo" data-state="Quintana Roo">
+                    </map>
                     <div style="text-align: center; margin-top: 16px; color: var(--color-text-secondary); font-size: var(--font-size-sm);">
                         💡 <strong>Cliquez sur un état</strong> pour découvrir ses informations détaillées
                     </div>
@@ -1352,37 +1381,28 @@
             });
         }
 
-        // Créer des zones cliquables sur la carte SVG
+        // Créer des zones cliquables sur la carte image
         function createClickableMap() {
-            const svg = document.getElementById('mexicoMap');
-            const statePaths = svg.querySelectorAll('path[id]');
+            const areas = document.querySelectorAll('map[name="mexicomap"] area');
 
-            statePaths.forEach(path => {
-                const stateName = path.getAttribute('id');
+            areas.forEach(area => {
+                const stateName = area.getAttribute('data-state');
                 
                 // Ajouter un événement de clic
-                path.addEventListener('click', (e) => {
+                area.addEventListener('click', (e) => {
                     e.preventDefault();
                     if (statesData[stateName]) {
                         displayStateInfo(stateName);
+                    } else {
+                        console.log('État non trouvé:', stateName);
                     }
                 });
 
-                // Ajouter un effet de survol avec titre
-                path.setAttribute('title', stateName);
-                
-                // Animation de survol améliorée
-                path.addEventListener('mouseenter', () => {
-                    path.style.transform = 'scale(1.02)';
-                    path.style.transformOrigin = 'center';
-                });
-                
-                path.addEventListener('mouseleave', () => {
-                    path.style.transform = 'scale(1)';
-                });
+                // Ajouter un style de curseur
+                area.style.cursor = 'pointer';
             });
 
-            console.log(`✅ Carte interactive créée avec ${statePaths.length} états cliquables`);
+            console.log(`✅ Carte interactive créée avec ${areas.length} états cliquables`);
         }
 
         // ============================================
