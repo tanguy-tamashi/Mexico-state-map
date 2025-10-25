@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carte Interactive des 32 États du Mexique</title>
+    <style>
+        /* DESIGN SYSTEM */
+        :root {
+            --color-white: rgba(255, 255, 255, 1);
+            --color-black: rgba(0, 0, 0, 1);
+            --color-cream-50: rgba(252, 252, 249, 1);
+            --color-cream-100: rgba(255, 255, 253, 1);
+            --color-gray-200: rgba(245, 245, 245, 1);
+            --color-gray-300: rgba(167, 169, 169, 1);
+            --color-gray-400: rgba(119, 124, 124, 1);
+            --color-slate-500: rgba(98, 108, 113, 1);
+            --color-brown-600: rgba(94, 82, 64, 1);
+            --color-charcoal-700: rgba(31, 33, 33, 1);
+            --color-charcoal-800: rgba(38, 40, 40, 1);
+            --color-slate-900: rgba(19, 52, 59, 1);
+            --color-teal-300: rgba(50, 184, 198, 1);
+            --color-teal-400: rgba(45, 166, 178, 1);
+            --color-teal-500: rgba(33, 128, 141, 1);
+            --color-teal-600: rgba(29, 116, 128, 1);
+            --color-teal-700: rgba(26, 104, 115, 1);
+            --color-brown-600-rgb: 94, 82, 64;
+            --color-teal-500-rgb: 33, 128, 141;
+            --color-slate-900-rgb: 19, 52, 59;
+            --color-slate-500-rgb: 98, 108, 113;
+            --color-background: var(--color-cream-50);
+            --color-surface: var(--color-cream-100);
+            --color-text: var(--color-slate-900);
+            --color-text-secondary: var(--color-slate-500);
+            --color-primary: var(--color-teal-500);
+            --color-primary-hover: var(--color-teal-600);
+            --color-primary-active: var(--color-teal-700);
+            --color-secondary: rgba(var(--color-brown-600-rgb), 0.12);
+            --color-border: rgba(var(--color-brown-600-rgb), 0.2);
+            --color-card-border: rgba(var(--color-brown-600-rgb), 0.12);
+            --font-family-base: "FKGroteskNeue", "Geist", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            --font-size-sm: 12px;
+            --font-size-base: 14px;
+            --font-size-lg: 16px;
+            --font-size-xl: 18px;
+            --font-size-2xl: 20px;
+            --font-size-3xl: 24px;
+            --font-weight-medium: 500;
+            --font-weight-semibold: 550;
+            --font-weight-bold: 600;
+            --space-8: 8px;
+            --space-12: 12px;
+            --space-16: 16px;
+            --space-20: 20px;
+            --space-24: 24px;
+            --space-32: 32px;
+            --radius-base: 8px;
+            --radius-lg: 12px;
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+            --duration-normal: 250ms;
+            --ease-standard: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --color-gray-400-rgb: 119, 124, 124;
+                --color-teal-300-rgb: 50, 184, 198;
+                --color-gray-300-rgb: 167, 169, 169;
+                --color-gray-200-rgb: 245, 245, 245;
+                --color-background: var(--color-charcoal-700);
+                --color-surface: var(--color-charcoal-800);
+                --color-text: var(--color-gray-200);
+                --color-text-secondary: rgba(var(--color-gray-300-rgb), 0.7);
+                --color-primary: var(--color-teal-300);
+                --color-primary-hover: var(--color-teal-400);
+                --color-border: rgba(var(--color-gray-400-rgb), 0.3);
+                --color-card-border: rgba(var(--color-gray-400-rgb), 0.2);
+            }
+        }
+
+        @font-face {
+            font-family: 'FKGroteskNeue';
+            src: url('https://r2cdn.perplexity.ai/fonts/FKGroteskNeue.woff2') format('woff2');
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family-base);
+            background-color: var(--color-background);
+            color: var(--color-text);
+            line-height: 1.5;
+        }
+
+        /* Layout */
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background-color: var(--color-surface);
+            border-bottom: 1px solid var(--color-border);
+            padding: var(--space-20) var(--space-24);
+            box-shadow: var(--shadow-md);
+        }
+
+        .header h1 {
+            font-size: var(--font-size-3xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-text);
+            margin-bottom: var(--space-8);
+        }
+
+        .header p {
+            font-size: var(--font-size-base);
+            color: var(--color-text-secondary);
+            margin: 0;
+        }
+
+        /* Controls */
+        .controls {
+            background-color: var(--color-surface);
+            border-bottom: 1px solid var(--color-border);
+            padding: var(--space-16) var(--space-24);
+            display: flex;
+            gap: var(--space-16);
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+            min-width: 250px;
+            max-width: 400px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: var(--space-12) var(--space-16);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-base);
+            font-size: var(--font-size-base);
+            background-color: var(--color-background);
+            color: var(--color-text);
+            transition: border-color var(--duration-normal) var(--ease-standard);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+
+        .autocomplete-list {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-top: none;
+            border-radius: 0 0 var(--radius-base) var(--radius-base);
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+            box-shadow: var(--shadow-md);
+        }
+
+        .autocomplete-list.active {
+            display: block;
+        }
+
+        .autocomplete-item {
+            padding: var(--space-12) var(--space-16);
+            cursor: pointer;
+            border-bottom: 1px solid var(--color-border);
+            transition: background-color var(--duration-normal) var(--ease-standard);
+        }
+
+        .autocomplete-item:last-child {
+            border-bottom: none;
+        }
+
+        .autocomplete-item:hover {
+            background-color: var(--color-secondary);
+        }
+
+        .filter-group {
+            display: flex;
+            gap: var(--space-8);
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: var(--space-8) var(--space-16);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-base);
+            background-color: var(--color-surface);
+            color: var(--color-text);
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-medium);
+            cursor: pointer;
+            transition: all var(--duration-normal) var(--ease-standard);
+        }
+
+        .filter-btn:hover {
+            background-color: var(--color-secondary);
+        }
+
+        .filter-btn.active {
+            background-color: var(--color-primary);
+            color: var(--color-white);
+            border-color: var(--color-primary);
+        }
+
+        /* Main content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* Map section */
+        .map-section {
+            flex: 1;
+            padding: var(--space-24);
+            overflow: auto;
+            position: relative;
+        }
+
+        .map-container {
+            max-width: 100%;
+            margin: 0 auto;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .map-image {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+        }
+
+        .state-overlay {
+            position: absolute;
+            cursor: pointer;
+            transition: all var(--duration-normal) var(--ease-standard);
+            border-radius: 4px;
+        }
+
+        .state-overlay:hover {
+            background-color: rgba(var(--color-teal-500-rgb), 0.3);
+        }
+
+        /* Side panel */
+        .side-panel {
+            width: 450px;
+            background-color: var(--color-surface);
+            border-left: 1px solid var(--color-border);
+            overflow-y: auto;
+            transition: transform var(--duration-normal) var(--ease-standard);
+        }
+
+        .side-panel.hidden {
+            display: none;
+        }
+
+        .panel-content {
+            padding: var(--space-24);
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--space-24);
+        }
+
+        .panel-title {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-primary);
+            margin-bottom: var(--space-8);
+        }
+
+        .panel-subtitle {
+            font-size: var(--font-size-base);
+            color: var(--color-text-secondary);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--color-text-secondary);
+            padding: 0;
+            line-height: 1;
+            transition: color var(--duration-normal) var(--ease-standard);
+        }
+
+        .close-btn:hover {
+            color: var(--color-text);
+        }
+
+        .info-section {
+            margin-bottom: var(--space-24);
+        }
+
+        .info-section h3 {
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-text);
+            margin-bottom: var(--space-12);
+            display: flex;
+            align-items: center;
+            gap: var(--space-8);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-12);
+            margin-bottom: var(--space-16);
+        }
+
+        .info-item {
+            padding: var(--space-12);
+            background-color: var(--color-background);
+            border-radius: var(--radius-base);
+            border: 1px solid var(--color-card-border);
+        }
+
+        .info-label {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+            margin-bottom: var(--space-8);
+            font-weight: var(--font-weight-medium);
+        }
+
+        .info-value {
+            font-size: var(--font-size-base);
+            color: var(--color-text);
+            font-weight: var(--font-weight-medium);
+        }
+
+        .info-text {
+            font-size: var(--font-size-base);
+            color: var(--color-text);
+            line-height: 1.6;
+            margin-bottom: var(--space-12);
+        }
+
+        .personalities-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-12);
+        }
+
+        .personality-item {
+            padding: var(--space-12);
+            background-color: var(--color-background);
+            border-radius: var(--radius-base);
+            border: 1px solid var(--color-card-border);
+        }
+
+        .personality-name {
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-primary);
+            margin-bottom: var(--space-8);
+        }
+
+        .personality-desc {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+        }
+
+        .wiki-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-8);
+            padding: var(--space-12) var(--space-20);
+            background-color: var(--color-primary);
+            color: var(--color-white);
+            border: none;
+            border-radius: var(--radius-base);
+            font-size: var(--font-size-base);
+            font-weight: var(--font-weight-medium);
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color var(--duration-normal) var(--ease-standard);
+        }
+
+        .wiki-btn:hover {
+            background-color: var(--color-primary-hover);
+        }
+
+        .emblem-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: var(--radius-base);
+            margin-bottom: var(--space-16);
+        }
+
+        /* Welcome message */
+        .welcome-message {
+            padding: var(--space-24);
+            text-align: center;
+            color: var(--color-text-secondary);
+        }
+
+        .welcome-message h2 {
+            font-size: var(--font-size-xl);
+            color: var(--color-text);
+            margin-bottom: var(--space-16);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .side-panel {
+                position: fixed;
+                right: 0;
+                top: 0;
+                bottom: 0;
+                width: 100%;
+                max-width: 450px;
+                z-index: 1000;
+                transform: translateX(100%);
+            }
+
+            .side-panel:not(.hidden) {
+                transform: translateX(0);
+            }
+
+            .side-panel-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: rgba(0, 0, 0, 0.5);
+                z-index: 999;
+                display: none;
+            }
+
+            .side-panel-overlay.active {
+                display: block;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: var(--space-16);
+            }
+
+            .header h1 {
+                font-size: var(--font-size-xl);
+            }
+
+            .controls {
+                padding: var(--space-12) var(--space-16);
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                max-width: 100%;
+            }
+
+            .side-panel {
+                max-width: 100%;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <h1>🇲🇽 Carte Interactive des 32 États du Mexique</h1>
+            <p>Explorez les États-Unis du Mexique : culture, histoire, économie et attractions</p>
+        </header>
+
+        <!-- Controls -->
+        <div class="controls">
+            <div class="search-box">
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    class="search-input" 
+                    placeholder="🔍 Rechercher un État..."
+                    autocomplete="off"
+                >
+                <div id="autocompleteList" class="autocomplete-list"></div>
+            </div>
+            <div class="filter-group">
+                <button class="filter-btn active" data-region="tous">Tous</button>
+                <button class="filter-btn" data-region="Nord">Nord</button>
+                <button class="filter-btn" data-region="Centre">Centre</button>
+                <button class="filter-btn" data-region="Sud">Sud</button>
+                <button class="filter-btn" data-region="Péninsule">Péninsule</button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Map Section -->
+            <div class="map-section">
+                <div class="map-container">
+                    <img 
+                        src="https://pplx-res.cloudinary.com/image/upload/v1761423488/pplx_project_search_images/b618a28b6f97d31b887e7b74ca3c15c067de823c.png" 
+                        alt="Carte du Mexique" 
+                        class="map-image"
+                        id="mapImage"
+                    >
+                </div>
+            </div>
+
+            <!-- Side Panel -->
+            <aside id="sidePanel" class="side-panel hidden">
+                <div class="panel-content">
+                    <div class="panel-header">
+                        <div>
+                            <h2 class="panel-title" id="stateName"></h2>
+                            <p class="panel-subtitle" id="stateCapital"></p>
+                        </div>
+                        <button class="close-btn" id="closePanel">&times;</button>
+                    </div>
+
+                    <div id="panelBody"></div>
+                </div>
+            </aside>
+        </div>
+
+        <!-- Overlay for mobile -->
+        <div class="side-panel-overlay" id="overlay"></div>
+    </div>
+
+    <script>
+        // ============================================
+        // DONNÉES DES 32 ÉTATS DU MEXIQUE
+        // Sources: INEGI, Wikipedia, Britannica
+        // Structure modifiable pour ajouts/modifications futures
+        // ============================================
+        const statesData = {
+            "Aguascalientes": {
+                capitale: "Aguascalientes",
+                population: "1 434 635",
+                superficie: "5 630 km²",
+                region: "Centre",
+                langues: "Espagnol",
+                economie: "PIB: ~15 milliards USD. Industrie automobile (Nissan), électronique, textile, viticulture.",
+                attractions: "Cathédrale d'Aguascalientes, Musée José Guadalupe Posada, sources thermales, Jardin de San Marcos.",
+                histoire: "Fondé en 1575 comme village de passage entre Zacatecas et Mexico. Le nom signifie 'eaux chaudes' en raison de ses sources thermales abondantes. Devenu État indépendant en 1857. Important centre ferroviaire au XIXe siècle. Rôle clé pendant la Révolution mexicaine avec la Convention d'Aguascalientes en 1914.",
+                reputation: "Foire nationale de San Marcos (Feria Nacional de San Marcos), l'une des plus grandes foires du Mexique. Vin et vignobles, broderie traditionnelle (deshilado).",
+                personnalites: [
+                    {nom: "José Guadalupe Posada", desc: "Illustrateur et graveur célèbre, créateur de la Catrina, icône de la culture mexicaine."},
+                    {nom: "Saturnino Herrán", desc: "Peintre symboliste majeur du début du XXe siècle."},
+                    {nom: "Manuel M. Ponce", desc: "Compositeur et pianiste, figure importante de la musique classique mexicaine."}
+                ],
+                wikipedia: "https://fr.wikipedia.org/wiki/Aguascalientes_(État)"
+            },
+            "Baja California": {
+                capitale: "Mexicali",
+                population: "3 769 020",
+                superficie: "71 546 km²",
+                region: "Nord",
+                langues: "Espagnol, langues autochtones (Kumiai, Paipai, Cucapá)",
+                economie: "PIB: ~35 milliards USD. Industrie manufacturière (maquiladoras), électronique, aérospatiale, tourisme, viticulture (Valle de Guadalupe).",
+                attractions: "Plages de Tijuana et Rosarito, Valle de Guadalupe (route des vins), La Bufadora, Parque Nacional Constitución de 1857.",
+                histoire: "Territoire peu peuplé jusqu'au XXe siècle. Division de la Basse-Californie en deux États en 1930. Mexicali fondée en 1903. Croissance rapide grâce à l'irrigation et l'industrie frontalière. Tijuana devient une destination touristique majeure. État le plus septentrional du Mexique.",
+                reputation: "Frontière avec les États-Unis (Tijuana-San Diego), tourisme médical, gastronomie Baja Med, vignobles de classe mondiale.",
+                personnalites: [
+                    {nom: "Marco Antonio Adame", desc: "Acteur mexicain connu pour ses rôles dans les telenovelas."},
+                    {nom: "Paquita la del Barrio", desc: "Chanteuse de ranchera célèbre pour ses chansons féministes."},
+                    {nom: "Germán Valdés 'Tin Tan'", desc: "Acteur et comédien iconique du cinéma mexicain de l'âge d'or."}
+                ],
+                wikipedia: "https://fr.wikipedia.org/wiki/Basse-Californie"
+            },
+            "Baja California Sur": {
+                capitale: "La Paz",
+                population: "798 447",
+                superficie: "73 943 km²",
+                region: "Péninsule",
+                langues: "Espagnol",
+                economie: "PIB: ~12 milliards USD. Tourisme (Los Cabos), pêche, agriculture, mines (sel, gypse).",
+                attractions: "Los Cabos (Cabo San Lucas, San José del Cabo), plages paradisiaques, Réserve de la biosphère El Vizcaíno, observation des baleines, plongée.",
+                histoire: "Longtemps territoire isolé, peuplé de missions jésuites aux XVIIe-XVIIIe siècles. Devient territoire fédéral en 1931, puis État en 1974. Économie traditionnelle basée sur la pêche et l'exploitation minière. Boom touristique depuis les années 1970 avec le développement de Los Cabos.",
+                reputation: "Destination touristique de luxe (Los Cabos), observation des baleines grises, pêche sportive, plages de sable blanc.",
+                personnalites: [
+                    {nom: "Carlos Santana", desc: "Bien que né à Jalisco, a vécu à Baja California Sur pendant son enfance. Guitariste légendaire."},
+                    {nom: "Narciso Agúndez", desc: "Révolutionnaire et gouverneur de Baja California Sur."},
+                    {nom: "Julieta Venegas", desc: "Chanteuse et compositrice à succès du pop-rock latino (a vécu à Tijuana)."}
+                ],
+                wikipedia: "https://fr.wikipedia.org/wiki/Basse-Californie_du_Sud"
+            },
+            "Campeche": {
+                capitale: "San Francisco de Campeche",
+                population: "928 363",
+                superficie: "57 727 km²",
+                region: "Péninsule",
+                langues: "Espagnol, Maya",
+                economie: "PIB: ~35 milliards USD. Extraction pétrolière (Golfe du Mexique), pêche, tourisme, agriculture (maïs, haricots).",
+                attractions: "Ville fortifiée de Campeche (UNESCO), site archéologique de Calakmul (UNESCO), Edzná, réserves de biosphère.",
+                histoire: "Région maya importante, habitée depuis des millénaires. Campeche fondée par les Espagnols en 1540. Centre de commerce colonial, cible fréquente des pirates. Fortifications construites au XVIIe siècle. Indépendance du Yucatán en 1863 pour devenir État. Important gisement pétrolier découvert dans les années 1970.",
+                reputation: "Ville coloniale fortifiée (murailles contre les pirates), patrimoine maya (Calakmul), fruits de mer (surtout les crevettes).",
+                personnalites: [
+                    {nom: "Justo Sierra Méndez", desc: "Écrivain, historien et homme politique, père du système éducatif mexicain moderne."},
+                    {nom: "Pablo García", desc: "Gouverneur et figure politique importante du XIXe siècle."},
+                    {nom: "Joaquín Clausell", desc: "Peintre impressionniste mexicain, pionnier du mouvement."}
+                ],
+                wikipedia: "https://fr.wikipedia.org/wiki/Campeche_(État)"
+            },
+            "Chiapas": {
+                capitale: "Tuxtla Gutiérrez",
+                population: "5 543 828",
+                superficie: "73 311 km²",
+                region: "Sud",
+                langues: "Espagnol, Tzotzil, Tzeltal, Chol, Zoque, Tojolabal",
+                economie: "PIB: ~25 milliards USD. Agriculture (café, cacao, maïs), élevage, hydroélectricité, tourisme, pétrole.",
+                attractions: "Palenque (site maya UNESCO), Cañón del Sumidero, cascades d'Agua Azul, San Cristóbal de las Casas, Bonampak, Yaxchilán.",
+                histoire: "Berceau de la civilisation maya, avec des cités majeures comme Palenque. Annexé au Mexique en 1824 après avoir fait partie du Guatemala. Région à forte population autochtone. Soulèvement zapatiste en 1994 (EZLN) pour les droits des peuples indigènes. Richesse culturelle et biodiversité exceptionnelles.",
+                reputation: "Sites archéologiques mayas, diversité culturelle indigène, café de haute qualité, artisanat (textiles), patrimoine naturel.",
+                personnalites: [
+                    {nom: "Jaime Sabines", desc: "Poète majeur du XXe siècle mexicain, considéré comme l'un des plus grands poètes de langue espagnole."},
+                    {nom: "Rosario Castellanos", desc: "Écrivaine, poétesse et diplomate, figure féministe importante."},
+                    {nom: "Subcomandante Marcos", desc: "Porte-parole et leader du mouvement zapatiste (EZLN)."}
+                ],
+                wikipedia: "https://fr.wikipedia.org/wiki/Chiapas"
+            },
+            "Chihuahua": {
+                capitale: "Chihuahua",
+                population: "3 741 869",
+                superficie: "247 487 km²",
+                region: "Nord",
+                langues: "Espagnol, Tarahumara (Rarámuri)",
+                economie: "PIB: ~50 milliards USD. Industrie manufacturière (maquiladoras), automobile, électronique, élevage, exploitation minière, foresterie.",
+                attractions: "Barrancas del Cobre (Copper Canyon), train El Chepe, Casas Grandes (Paquimé UNESCO), Creel, cathédrale de Chihuahua.",
+                histoire: "Région minière importante depuis l'époque coloniale (argent). Chihuahua fondée en 1709. Pancho Villa natif de l'État, figure centrale de la Révolution mexicaine. Le plus grand État du Mexique par superficie. Front important pendant les guerres contre les États-Unis et la France. Forte croissance industrielle depuis les années 1960.",
+                reputation: "Race de chien Chihuahua, Barrancas del Cobre (plus grand que le Grand Canyon), fromage menonita, Pancho Villa.",
+                personnalites: [
+                    {nom: "Pancho Villa", desc: "Révolutionnaire légendaire et général pendant la Révolution mexicaine."},
+                    {nom: "Anthony Quinn", desc: "Acteur oscarisé d'origine mexicaine, star hollywoodienne."},
+                    {nom: "Juan Gabriel", desc: "Chanteur et compositeur iconique, légende de la musique mexicaine."}
+                ],
+                wikipedia: "https://fr.wikipedia.org/wiki/Chihuahua_(État)"
+            },
+            "Coahuila": {
+                capitale: "Saltillo",
+                population: "3 146 771",
+                superficie: "151 595 km²",
+                region: "Nord",
+                langues: "Espagnol",
+                economie: "PIB: ~45 milliards USD. Industrie automobile (Chrysler, GM), sidérurgie, mines (charbon), agroalimentaire, textile.",
+                attractions: "Dunes de Cuatro Ciénegas (réserve de biosphère UNESCO), Musée du Désert, Parras de la Fuente (vignobles), Saltillo (Sarape).",
+                histoire: "Colonisation espagnole au XVIe siècle. Uni à Nuevo León puis au Texas avant l'indépendance. Région minière (charbon, argent). Saltillo fondée en 1577, l'une des plus anciennes villes du nord. Important centre de la Révolution mexicaine. Industrialisation rapide au XXe siècle grâce à l'automobile.",
+                reputation: "Industrie automobile, sarape de Saltillo (couverture traditionnelle), vin de Parras (plus vieille cave d'Amérique), désert de Cuatro Ciénegas.",
+                personnalites: [
+                    {nom: "Venustiano Carranza", desc: "Président du Mexique pendant la Révolution, auteur de la Constitution de 1917."},
+                    {nom: "Francisco I. Madero", desc: "Révolutionnaire et président, déclencheur de la Révolution mexicaine."},
+                    {nom: "Guillermo del Toro", desc: "Réalisateur oscarisé (famille originaire de Coahuila)."}
+                ],
+                wikipedia: "https://fr.wikipedia.org/wiki/Coahuila"
+            },
+            "Colima": {
+                capitale: "Colima",
+                population: "731 391",
+                superficie: "5 627 km²",
+                region: "Centre",
+                langues: "Espagnol",
+                economie: "PIB: ~12 milliards USD. Agriculture (citron, noix de coco, mangue), port de Manzanillo (l'un des plus importants du Mexique), tourisme, pêche.",
+                attractions: "Volcan de Colima (actif), plages de Manzanillo, zone archéologique de La Campana, Comala (Pueblo Mágico).",
+                histoire: "Peuplé par les cultures précolombiennes (Capacha, culture de Colima). Conquis par les Espagnols en 1523. Colima devient l'une des premières villes coloniales. Petit État mais port stratégique sur le Pacifique. Séismes fréquents dus à l'activité volcanique. Développement portuaire majeur au XXe siècle.",
+                reputation: "Plus petit État du Mexique (avec Aguascalientes), volcan actif, port de Manzanillo, ponche de Comala (boisson chaude).",
+                personnalites: [
+                    {nom: "Miguel de la Madrid", desc: "Président du Mexique de 1982 à 1988."},
+                    {nom: "Griselda Álvarez", desc: "Première femme gouverneur d'un État au Mexique (Colima, 1979-1985)."},
+                    {nom: "Alejandro Rangel Hidalgo", desc: "Artiste et designer, créateur de l'identité visuelle de marques mexicaines."}
+                ],
+                wikipedia: "https://fr.wikipedia.org/wiki/Colima_(État)"
+            },
+            "Durango": {
+                capitale: "Victoria de Durango",
+                population: "1 832 650",
+                superficie: "123 367 km²",
+                region: "Nord",
+                langues: "Espagnol, Tepehuano",
+                economie: "PIB: ~22 milliards USD. Mines (or, argent, fer), foresterie (bois), agriculture, cinéma (lieux de tournage westerns).",
+                attractions: "Villa del Oeste (décors de westerns), Mapimí (Zone du Silence), Mexiquillo, Nombre de Dios.",
+                histoire: "Fondé en 1563 comme centre minier d'argent. Nom complet: Victoria de Durango, en l'honneur de Guadalupe Victoria. Centre important de l'industrie minière coloniale. Rôle dans la Révolution mexicaine avec Pancho Villa. Célèbre pour avoir accueilli des centaines de tournages de westerns hollywoodiens depuis les années 1950.",
+                reputation: "Lieu de tournage de westerns (John Wayne, etc.), scorpions comestibles, Zone du Silence (anomalie magnétique), argent.",
+                personnalites: [
+                    {nom: "Francisco Villa (Pancho Villa)", desc: "Révolutionnaire légendaire (bien que né à Durango selon certaines sources)."},
+                    {nom: "Dolores del Río", desc: "Actrice de cinéma, première star mexicaine à Hollywood."},
+                    {nom: "Silvestre Revueltas", desc: "Compositeur et chef d'orchestre, figure majeure de la musique classique mexicaine."}
+                ],
+                wikipedia: "https://fr.wikipedia.org/wiki/Durango_(État)"
+            },
+            "Guanajuato": {
+                capitale: "Guanajuato",
+                population: "6 166 934",
+                superficie: "30 691 km²",
+                region: "Centre",
+                langues: "Espagnol",
+                economie: "PIB: ~60 milliards USD. Industrie automobile (GM, Honda, Mazda, VW, Toyota), cuir et chaussures, agriculture, tourisme, services.",
+                attractions: "Ville de Guanajuato (UNESCO), San Miguel de Allende (UNESCO), Momies de Guanajuato, Festival Cervantino, León (capitale mondiale de la chaussure).",
+                histoire: "Centre majeur de l'exploitation minière d'argent à l'époque coloniale, l'une des régions les plus riches de Nouvelle-Espagne. Berceau de l'Indépendance mexicaine: le Grito de Dolores lancé par Miguel Hidalgo en 1810. Bataille importante à l'Alhóndiga de Granaditas. Architecture baroque coloniale préservée. Hub industriel majeur depuis les années 2000.",
+                reputation: "Berceau de l'Indépendance, Festival Cervantino (arts de la scène), industrie automobile, San Miguel de Allende (ville d'artistes).",
+                personnalites: [
+                    {nom: "Diego Rivera", desc: "Peintre muraliste mondialement célèbre, figure du muralisme mexicain."},
+                    {nom: "Jorge Negrete", desc: "Chanteur et acteur, icône du cinéma mexicain de l'âge d'or."},
+                    {nom: "Vicente Fox", desc: "Président du Mexique de 2000 à 2006, premier président d'opposition en 71 ans."}
+                ],
+                wikipedia: "https://fr.wikipedia.org/wiki/Guanajuato_(État)"
+            },
+            "Guerrero": {
+                capitale: "Chilpancingo de los Bravo",
+                population: "3 540 685",
+                superficie: "63 619 km²",
+                region: "Sud",
+                langues: "Espagnol, Náhuatl, Mixteco, Tlapaneco, Amuzgo",
+                economie: "PIB: ~30 milliards USD. Tourisme (Acapulco, Ixtapa-Zihuatanejo, Taxco), mines (argent), agriculture (coprah, café, maïs).",
+                attractions: "Acapulco (plages, plongeurs de La Quebrada), Taxco (ville coloniale de l'argent), Ixtapa-Zihuatanejo, Tehuacalco.",
+                histoire: "Nommé en l'honneur de Vicente Guerrero, héros de l'Indépendance. Région stratégique pendant la conquête et l'Indépendance. Acapulco: port majeur de la route du Galion de Manille (commerce Asie-Amérique) dès le XVIe siècle. Station balnéaire internationale dans les années 1950-1970. Défis de sécurité contemporains mais patrimoine culturel riche.",
+                reputation: "Acapulco (destination balnéaire historique), Taxco (bijoux en argent), plongeurs de La Quebrada, cuisine afro-mexicaine (Costa Chica).",
+                personnalites: [
+                    {nom: "Vicente Guerrero", desc: "Héros de l'Indépendance mexicaine, deuxième président du Mexique."},
+                    {nom: "Juan Ruiz de Alarcón", desc: "Dramaturge du Siècle d'or espagnol, né à Taxco."},
+                    {nom: "Ignacio Manuel Altamirano", desc: "Écrivain, journaliste et homme politique du XIXe siècle."}
+                ],
+                wikipedia: "https://fr.wikipedia.org/wiki/Guerrero"
+            },
+            "Hidalgo": {
+                capitale: "Pachuca de Soto",
+                population: "3 082 841",
+                superficie: "20 856 km²",
+                region: "Centre",
+                langues: "Espagnol, Náhuatl, Otomí",
+                economie: "PIB: ~28 milliards USD. Mines (argent, or, cuivre), ciment, agriculture, textile, tourisme.",
+                attractions: "Prismes basaltiques de Santa María Regla, Parc National El Chico, Tula (site archéologique toltèque), Pueblo Mágico Real del Monte.",
+                histoire: "Nommé en l'honneur de Miguel Hidalgo, père de l'Indépendance. Centre minier d'argent depuis l'époque coloniale, notamment à Pachuca et Real del Monte. Influence britannique au XIXe siècle dans les mines (introduction du football au Mexique). Création de l'État en 1869. Patrimoine industriel minier important.",
+                reputation: "Pastes (empanadas minières d'origine cornouaillaise), mines d'argent, Horloge Monumentale de Pachuca, berceau du football mexicain.",
+                personnalites: [
+                    {nom: "David Ben Gurión", desc: "Premier ministre d'Israël, a vécu brièvement à Hidalgo."},
+                    {nom: "Rodolfo Guzmán Huerta 'El Santo'", desc: "Lutteur masqué légendaire et acteur de cinéma."},
+                    {nom: "Alfonso Cravioto", desc: "Poète, essayiste et diplomate du XXe siècle."}
+                ],
+                wikipedia: "https://fr.wikipedia.org/wiki/Hidalgo_(État)"
+            },
+            "Jalisco": {
+                capitale: "Guadalajara",
+                population: "8 348 151",
+                superficie: "78 630 km²",
+                region: "Centre",
+                langues: "Espagnol",
+                economie: "PIB: ~100 milliards USD. Technologie (Silicon Valley mexicaine), tequila, agriculture, tourisme, électronique, services financiers.",
+                attractions: "Guadalajara (deuxième ville du Mexique), Tequila (UNESCO), Puerto Vallarta, Lago de Chapala, Tlaquepaque (artisanat), Guachimontones.",
+                histoire: "Guadalajara fondée en 1542, deuxième ville la plus importante du Mexique. Berceau de la tequila et des mariachis. Rôle important pendant la Révolution mexicaine. Centre culturel majeur: capitale de la musique mariachi. Croissance technologique importante depuis les années 1990. Identité culturelle forte (charros, jarabe tapatío).",
+                reputation: "Tequila, mariachis, charreada (rodéo mexicain), tortas ahogadas, Foire Internationale du Livre, tech hub.",
+                personnalites: [
+                    {nom: "Guillermo del Toro", desc: "Réalisateur oscarisé (The Shape of Water, Pan's Labyrinth)."},
+                    {nom: "Juan Rulfo", desc: "Écrivain majeur du XXe siècle, auteur de Pedro Páramo."},
+                    {nom: "José Clemente Orozco", desc: "Peintre muraliste, l'un des trois grands du muralisme mexicain."}
+                ],
+                wikipedia: "https://fr.wikipedia.org/wiki/Jalisco"
+            },
+            "México": {
+                capitale: "Toluca de Lerdo",
+                population: "16 992 418",
+                superficie: "22 333 km²",
+                region: "Centre",
+                langues: "Espagnol, Náhuatl, Otomí, Mazahua, Matlatzinca",
+                economie: "PIB: ~130 milliards USD. Industrie manufacturière, automobile, chimie, alimentation, services, construction, tourisme.",
+                attractions: "Teotihuacan (UNESCO), Nevado de Toluca, Valle de Bravo, Malinalco, Metepec (artisanat), Tepotzotlán.",
+                histoire: "État le plus peuplé du Mexique, entoure Mexico City. Site de Teotihuacan, l'une des plus grandes cités précolombiennes (200-750 apr. J.-C.). Zone centrale de l'Empire aztèque. Toluca fondée avant la conquête. Industrialisation intensive au XXe siècle. Croissance urbaine rapide liée à l'expansion de Mexico City.",
+                reputation: "Teotihuacan (Pyramides du Soleil et de la Lune), artisanat de Metepec (arbres de vie), chorizo de Toluca, État le plus peuplé.",
+                personnalites: [
+                    {nom: "Ignacio López Tarso", desc: "Acteur de théâtre et de cinéma, légende vivante du Mexique."},
+                    {nom: "Sor Juana Inés de la Cruz", desc: "Poétesse, dramaturge et religieuse du XVIIe siècle, icône féministe."},
+                    {nom: "Mario Molina", desc: "Chimiste, prix Nobel de chimie 1995 pour ses travaux sur la couche d'ozone."}
+                ],
+                wikipedia: "https://fr.wikipedia.org/wiki/État_de_Mexico"
+            },
+            "Michoacán": {
+                capitale: "Morelia",
+                population: "4 748 846",
+                superficie: "58 447 km²",
+                region: "Centre",
+                langues: "Espagnol, Purépecha (Tarasco)",
+                economie: "PIB: ~40 milliards USD. Agriculture (avocats - 1er producteur mondial), pêche, foresterie, tourisme, mines.",
+                attractions: "Morelia (UNESCO), Pátzcuaro, Sanctuaire du papillon monarque (UNESCO), Tzintzuntzan, plages de Michoacán.",
+                histoire: "Terre des Purépechas (Tarasques), qui résistèrent aux Aztèques. Morelia fondée en 1541, berceau de l'Indépendance (José María Morelos y Pavón). Architecture coloniale remarquable. Important centre culturel et éducatif. Tradition artisanale ancienne préservée. Sanctuaire du papillon monarque, phénomène migratoire unique.",
+                reputation: "Avocats (capitale mondiale), papillon monarque, Día de Muertos (célébrations à Pátzcuaro), carnitas, artisanat (cuivre, laque).",
+                personnalites: [
+                    {nom: "José María Morelos y Pavón", desc: "Héros de l'Indépendance, prêtre et stratège militaire."},
+                    {nom: "Lázaro Cárdenas", desc: "Président du Mexique (1934-1940), nationalisa le pétrole."},
+                    {nom: "Agustín de Iturbide", desc: "Premier empereur du Mexique après l'Indépendance."}
+                ],
+                wikipedia: "https://fr.wikipedia.org/wiki/Michoacán"
+            },
+            "Morelos": {
+                capitale: "Cuernavaca",
+                population: "1 971 520",
+                superficie: "4 892 km²",
+                region: "Centre",
+                langues: "Espagnol, Náhuatl",
+                economie: "PIB: ~20 milliards USD. Tourisme, agriculture (canne à sucre, riz), services, industrie, commerce.",
+                attractions: "Cuernavaca (ville de l'éternel printemps), Tepoztlán, Xochicalco (UNESCO), balnearios (sources thermales), Tequesquitengo.",
+                histoire: "Nommé en l'honneur de José María Morelos. Cuernavaca résidence favorite de Hernán Cortés et de l'empereur Maximilien. Site archéologique de Xochicalco important centre préhispanique. Émiliano Zapata natif de l'État, leader agraire de la Révolution. Climat agréable attirant touristes et retraités depuis des siècles.",
+                reputation: "Climat printanier toute l'année, Tepoztlán (ville mystique), cecina (viande séchée), résidence de week-end des habitants de Mexico City.",
+                personnalites: [
+                    {nom: "Emiliano Zapata", desc: "Révolutionnaire agraire, leader du mouvement zapatiste, héros national."},
+                    {nom: "José María Morelos y Pavón", desc: "Héros de l'Indépendance (l'État porte son nom)."},
+                    {nom: "Juan Ruiz de Alarcón", desc: "Dramaturge du Siècle d'or espagnol (selon certaines sources)."}
+                ],
+                wikipedia: "https://fr.wikipedia.org/wiki/Morelos"
+            },
+            "Nayarit": {
+                capitale: "Tepic",
+                population: "1 235 456",
+                superficie: "27 862 km²",
+                region: "Centre",
+                langues: "Espagnol, Cora, Huichol (Wixárika)",
+                economie: "PIB: ~14 milliards USD. Tourisme (Riviera Nayarit), agriculture (tabac, canne à sucre, mangues), pêche, aquaculture.",
+                attractions: "Riviera Nayarit (Sayulita, Punta Mita), Îles Marietas, San Blas, Laguna de Santa María del Oro.",
+                histoire: "Territoire des cultures Cora et Huichol (Wixárika). Tardif à être colonisé par les Espagnols. Devient État en 1917, l'un des derniers créés. Économie agricole traditionnelle. Développement touristique récent avec la Riviera Nayarit. Préservation de traditions autochtones importantes.",
+                reputation: "Riviera Nayarit (surf, plages), Huichol (art traditionnel perlé), tabac, observation des baleines à bosse.",
+                personnalites: [
+                    {nom: "Amado Nervo", desc: "Poète et écrivain moderniste, l'un des plus importants du Mexique."},
+                    {nom: "Juan Escutia", desc: "Héros national, Niño Héroe (bataille de Chapultepec 1847)."},
+                    {nom: "José Mariano Morelos", desc: "Relation avec José María Morelos y Pavón (héros de l'Indépendance)."}
+                ],
+                wikipedia: "https://fr.wikipedia.org/wiki/Nayarit"
+            },
+            "Nuevo León": {
+                capitale: "Monterrey",
+                population: "5 784 442",
+                superficie: "64 203 km²",
+                region: "Nord",
+                langues: "Espagnol",
+                economie: "PIB: ~120 milliards USD. Industrie (sidérurgie, brasserie, ciment, verre), services financiers, commerce, technologie. PIB par habitant le plus élevé du Mexique.",
+                attractions: "Monterrey (troisième ville du Mexique), Cerro de la Silla, Parque Fundidora, Museo MARCO, Grutas de García, Santiago.",
+                histoire: "Fondation de Monterrey en 1596. Développement lent jusqu'au XIXe siècle. Industrialisation rapide au XXe siècle avec la création de grandes entreprises (CEMEX, Cervecería Cuauhtémoc, Vitro). Centre économique et industriel majeur. Culture entrepreneuriale forte. Rôle stratégique frontalier avec le Texas.",
+                reputation: "Puissance économique (grandes entreprises), machaca (viande séchée), cabrito (chevreau), ville moderne et d'affaires.",
+                personnalites: [
+                    {nom: "Alfonso Reyes", desc: "Écrivain, poète et diplomate, figure majeure de la littérature mexicaine."},
+                    {nom: "Eugenio Garza Sada", desc: "Entrepreneur et philanthrope, fondateur du Tecnológico de Monterrey."},
+                    {nom: "Rómulo Garza", desc: "Artiste contemporain reconnu internationalement."}
+                ],
+                wikipedia: "https://fr.wikipedia.org/wiki/Nuevo_León"
+            },
+            "Oaxaca": {
+                capitale: "Oaxaca de Juárez",
+                population: "4 132 148",
+                superficie: "93 343 km²",
+                region: "Sud",
+                langues: "Espagnol, Zapoteco, Mixteco, Mazateco, Chinanteco, Mixe (16 groupes linguistiques autochtones)",
+                economie: "PIB: ~25 milliards USD. Tourisme, agriculture (café, mezcal, maïs), artisanat (textiles, poterie noire, alebrijes), services.",
+                attractions: "Monte Albán (UNESCO), Mitla, Hierve el Agua, plages (Puerto Escondido, Huatulco, Mazunte), ville d'Oaxaca (UNESCO).",
+                histoire: "Berceau de grandes civilisations précolombiennes (Zapotèques, Mixtèques). Monte Albán, l'une des premières grandes cités mésoaméricaines. Benito Juárez, président réformiste, natif d'Oaxaca. Diversité ethnique et linguistique la plus riche du Mexique. Forte préservation des traditions autochtones. Centre gastronomique et artisanal majeur.",
+                reputation: "Mezcal, mole (7 variétés), Guelaguetza (festival culturel), artisanat (alebrijes, textiles, poterie noire), diversité culturelle.",
+                personnalites: [
+                    {nom: "Benito Juárez", desc: "Président du Mexique, héros national, réformateur libéral."},
+                    {nom: "Rufino Tamayo", desc: "Peintre moderniste de renommée internationale."},
+                    {nom: "Francisco Toledo", desc: "Artiste plastique, graveur et activiste culturel."}
+                ],
+                wikipedia: "https://fr.wikipedia.org/wiki/Oaxaca_(État)"
+            },
+            "Puebla": {
+                capitale: "Heroica Puebla de Zaragoza",
+                population: "6 583 278",
+                superficie: "34 306 km²",
+                region: "Centre",
+                langues: "Espagnol, Náhuatl, Totonaco",
+                economie: "PIB: ~65 milliards USD. Industrie automobile (VW, Audi), textile, agroalimentaire, construction, tourisme.",
+                attractions: "Centro Histórico de Puebla (UNESCO), Cholula (plus grande pyramide du monde par volume), Popocatépetl, Africam Safari, Talavera.",
+                histoire: "Puebla fondée en 1531, première ville planifiée d'Amérique. Victoire mexicaine contre les Français le 5 mai 1862 (Cinco de Mayo). Centre colonial majeur, architecture baroque remarquable. Important centre textile depuis l'époque coloniale. Ville de Cholula: site religieux préhispanique et colonial important. Hub industriel automobile moderne.",
+                reputation: "Mole poblano, chiles en nogada, Talavera (céramique), Cinco de Mayo, architecture baroque.",
+                personnalites: [
+                    {nom: "Ignacio Zaragoza", desc: "Général, vainqueur de la bataille de Puebla (5 mai 1862)."},
+                    {nom: "Ángeles Mastretta", desc: "Écrivaine et journaliste à succès."},
+                    {nom: "Guillermo Arriaga", desc: "Scénariste et romancier (Amores Perros, 21 Grams)."}
+                ],
+                wikipedia: "https://fr.wikipedia.org/wiki/Puebla_(État)"
+            },
+            "Querétaro": {
+                capitale: "Santiago de Querétaro",
+                population: "2 368 467",
+                superficie: "11 658 km²",
+                region: "Centre",
+                langues: "Espagnol, Otomí",
+                economie: "PIB: ~50 milliards USD. Industrie aérospatiale, automobile, électronique, agroalimentaire (vins, fromages), services.",
+                attractions: "Centro Histórico de Querétaro (UNESCO), Missions franciscaines de la Sierra Gorda (UNESCO), Peña de Bernal, Tequisquiapan.",
+                histoire: "Site de la conjuration qui déclencha l'Indépendance (1810). Constitution mexicaine de 1917 signée à Querétaro. Empereur Maximilien exécuté à Querétaro en 1867. Aqueduc monumental du XVIIIe siècle. Croissance économique et démographique rapide depuis les années 1990. Hub industriel de haute technologie.",
+                reputation: "Industrie aérospatiale, vin et fromages (route des vins et fromages), Peña de Bernal (troisième plus grand monolithe du monde).",
+                personnalites: [
+                    {nom: "Josefa Ortiz de Domínguez 'La Corregidora'", desc: "Héroïne de l'Indépendance, lança l'alerte du complot découvert."},
+                    {nom: "Fernando Landeros", desc: "Architecte visionnaire, créateur d'œuvres d'architecture organique."},
+                    {nom: "Ignacio Pérez", desc: "Corregidor de Querétaro, époux de La Corregidora."}
+                ],
+                wikipedia: "https://fr.wikipedia.org/wiki/Querétaro_(État)"
+            },
+            "Quintana Roo": {
+                capitale: "Chetumal",
+                population: "1 857 985",
+                superficie: "42 535 km²",
+                region: "Péninsule",
+                langues: "Espagnol, Maya",
+                economie: "PIB: ~35 milliards USD. Tourisme (Cancún, Riviera Maya, Playa del Carmen), commerce, services, construction.",
+                attractions: "Cancún, Riviera Maya, Tulum (site maya et plages), Playa del Carmen, Cozumel, Bacalar (lagune aux 7 couleurs), Chichén Itzá, Isla Mujeres.",
+                histoire: "Dernier État créé (1974), anciennement territoire fédéral. Région maya peu peuplée jusqu'au XXe siècle. Développement touristique planifié à partir de 1970 avec Cancún. Boom touristique transformant l'économie locale. Sites mayas majeurs comme Tulum et Cobá. Cenotes et réserves naturelles importantes.",
+                reputation: "Cancún (destination touristique mondiale), Riviera Maya, plages de sable blanc, plongée (Grande barrière de corail mésoaméricaine), sites mayas.",
+                personnalites: [
+                    {nom: "Andrés Quintana Roo", desc: "Poète et homme politique, héros de l'Indépendance (l'État porte son nom)."},
+                    {nom: "Stephanie Salas", desc: "Chanteuse et actrice mexicaine."},
+                    {nom: "José María Morelos (connexion)", desc: "A combattu dans la région pendant l'Indépendance."}
+                ],
+                wikipedia: "https://fr.wikipedia.org/wiki/Quintana_Roo"
+            },
+            "San Luis Potosí": {
+                capitale: "San Luis Potosí",
+                population: "2 822 255",
+                superficie: "61 165 km²",
+                region: "Centre",
+                langues: "Espagnol, Náhuatl, Pame, Huasteco",
+                economie: "PIB: ~35 milliards USD. Industrie automobile, mines (argent, or, zinc), agriculture, services, construction.",
+                attractions: "Centro Histórico de SLP, Xilitla (Jardín Surrealista de Edward James), Cascades de Tamul, Real de Catorce, Huasteca Potosina.",
+                histoire: "Fondée en 1592 suite à la découverte de riches gisements d'argent. Nom inspiré de Potosí (Bolivie). Centre minier important pendant la période coloniale. Plan de San Luis proclamé ici par Madero, déclenchant la Révolution mexicaine (1910). Architecture néoclassique et baroque remarquable. Diversité géographique (désert, montagnes, jungle).",
+                reputation: "Huasteca Potosina (cascades, rivières turquoise), Real de Catorce (ville fantôme), Jardín Surrealista de Edward James.",
+                personnalites: [
+                    {nom: "Manuel José Othón", desc: "Poète romantique du XIXe siècle."},
+                    {nom: "Julián Carrillo", desc: "Compositeur et théoricien musical, pionnier de la musique microtonale."},
+                    {nom: "Pita Amor", desc: "Poétesse bohème et controversée du XXe siècle."}
+                ],
+                wikipedia: "https://fr.wikipedia.org/wiki/San_Luis_Potosí_(État)"
+            },
+            "Sinaloa": {
+                capitale: "Culiacán",
+                population: "3 026 943",
+                superficie: "57 331 km²",
+                region: "Nord",
+                langues: "Espagnol",
+                economie: "PIB: ~35 milliards USD. Agriculture (tomates, maïs, haricots - grenier du Mexique), pêche (crevettes), tourisme, élevage.",
+                attractions: "Mazatlán (plages, carnaval), Playa Cerritos, Malecón de Mazatlán, Pueblo Señorial de Cosalá, Îles María.",
+                histoire: "Région agricole fertile grâce à l'irrigation moderne depuis le XXe siècle. Mazatlán important port du Pacifique depuis l'époque coloniale. Développement touristique balnéaire. Culture de la banda sinaloense (musique régionale). Défis contemporains de sécurité mais richesse agricole importante.",
+                reputation: "Banda sinaloense (musique), crevettes (capitale mondiale de la crevette), Carnaval de Mazatlán (l'un des plus importants du Mexique), agriculture intensive.",
+                personnalites: [
+                    {nom: "Pedro Infante", desc: "Acteur et chanteur, icône du cinéma mexicain de l'âge d'or."},
+                    {nom: "Jorge Campos", desc: "Gardien de but de football légendaire, connu pour ses maillots colorés."},
+                    {nom: "Lola Beltrán", desc: "Chanteuse de ranchera, 'La Grande Dame de la chanson mexicaine'."}
+                ],
+                wikipedia: "https://fr.wikipedia.org/wiki/Sinaloa"
+            },
+            "Sonora": {
+                capitale: "Hermosillo",
+                population: "2 944 840",
+                superficie: "179 355 km²",
+                region: "Nord",
+                langues: "Espagnol, Mayo, Yaqui, Pima, Seri",
+                economie: "PIB: ~45 milliards USD. Industrie automobile (Ford), mines (cuivre, or, graphite), agriculture (blé, raisin), élevage, pêche.",
+                attractions: "Plages de San Carlos et Puerto Peñasco, Álamos (Pueblo Mágico), Pinturas Rupestres de la Sierra de San Francisco, Bahía de Kino.",
+                histoire: "Colonisation espagnole tardive et difficile due aux tribus Yaqui et Mayo résistantes. Sonora territoire puis État en 1830. Importante production minière (cuivre). Révolution mexicaine: plusieurs leaders natifs de Sonora (Plutarco Elías Calles, Adolfo de la Huerta, Álvaro Obregón). Modernisation agricole au XXe siècle (Vallée du Yaqui).",
+                reputation: "Carne asada (viande grillée), burritos, mines de cuivre, désert de Sonora, plages du Golfe de Californie.",
+                personnalites: [
+                    {nom: "Plutarco Elías Calles", desc: "Président du Mexique (1924-1928), figure politique majeure post-révolution."},
+                    {nom: "Álvaro Obregón", desc: "Général révolutionnaire et président du Mexique (1920-1924)."},
+                    {nom: "María Félix", desc: "Actrice iconique, légende du cinéma mexicain et symbole de beauté."}
+                ],
+                wikipedia: "https://fr.wikipedia.org/wiki/Sonora"
+            },
+            "Tabasco": {
+                capitale: "Villahermosa",
+                population: "2 402 598",
+                superficie: "24 731 km²",
+                region: "Sud",
+                langues: "Espagnol, Chontal, Chol, Zoque",
+                economie: "PIB: ~30 milliards USD. Pétrole (principale source), agriculture (cacao, banane, noix de coco), pêche, élevage.",
+                attractions: "Site archéologique de Comalcalco, Parque-Museo La Venta (têtes olmèques), Yumká (parc naturel), rivières et lagunes.",
+                histoire: "Berceau de la civilisation olmèque (1500-400 av. J.-C.), la plus ancienne de Mésoamérique. Région marécageuse et tropicale, difficile à coloniser. Villahermosa fondée en 1564. Tabasco envahi par les États-Unis (1846) et la France (1862-1867). Découverte de pétrole au XXe siècle transformant l'économie. Inondations fréquentes dues aux nombreux fleuves.",
+                reputation: "Berceau de la civilisation olmèque, chocolat (cacao), pétrole, sauce Tabasco (nom inspiré de l'État), pejelagarto (poisson préhistorique).",
+                personnalites: [
+                    {nom: "Carlos Pellicer", desc: "Poète majeur du XXe siècle, muséographe et défenseur du patrimoine."},
+                    {nom: "Tomás Garrido Canabal", desc: "Gouverneur radical et anticlérical dans les années 1920-1930."},
+                    {nom: "Andrés Manuel López Obrador (AMLO)", desc: "Président du Mexique (2018-2024), natif de Tabasco."}
+                ],
+                wikipedia: "https://fr.wikipedia.org/wiki/Tabasco_(État)"
+            },
+            "Tamaulipas": {
+                capitale: "Ciudad Victoria",
+                population: "3 527 735",
+                superficie: "80 148 km²",
+                region: "Nord",
+                langues: "Espagnol",
+                economie: "PIB: ~38 milliards USD. Industrie manufacturière (maquiladoras), pétrole, agriculture, pêche (crevettes), commerce frontalier.",
+                attractions: "Plages de Tampico et Miramar, Réserve de la biosphère El Cielo, Ciudad Mante, zone archéologique de Tammapul.",
+                histoire: "Région disputée entre le Mexique et le Texas avant 1848. Plusieurs villes frontalières importantes (Matamoros, Reynosa, Nuevo Laredo). Tampico: important port pétrolier depuis le début du XXe siècle. Développement industriel lié à la frontière et au pétrole. Défis de sécurité contemporains mais économie diversifiée.",
+                reputation: "Frontière avec le Texas (commerce intense), industrie maquiladora, pêche (crevettes), pétrole (Tampico).",
+                personnalites: [
+                    {nom: "Emilio Portes Gil", desc: "Président du Mexique (1928-1930)."},
+                    {nom: "Pedro J. González", desc: "Révolutionnaire et pionnier de la radio en espagnol aux États-Unis."},
+                    {nom: "Rigo Tovar", desc: "Chanteur et musicien, pionnier de la cumbia mexicaine moderne."}
+                ],
+                wikipedia: "https://fr.wikipedia.org/wiki/Tamaulipas"
+            },
+            "Tlaxcala": {
+                capitale: "Tlaxcala de Xicohténcatl",
+                population: "1 342 977",
+                superficie: "3 997 km²",
+                region: "Centre",
+                langues: "Espagnol, Náhuatl",
+                economie: "PIB: ~12 milliards USD. Industrie textile, automobile, pharmaceutique, agriculture, commerce.",
+                attractions: "Cacaxtla (peintures murales préhispaniques), Xochitécatl, Sanctuaire de Lucioles (sanctuaire de luciérnagas), Huamantla.",
+                histoire: "Le plus petit État du Mexique. Tlaxcala: république indépendante qui s'allia à Cortés contre les Aztèques (1519). Rôle crucial dans la conquête espagnole. Premier baptême chrétien en Amérique continentale. Conserve traditions et fêtes coloniales. Industrie textile importante depuis l'époque coloniale.",
+                reputation: "Plus petit État du Mexique, alliance avec Cortés, Pan de Feria (pain traditionnel), Huamantla (festival de tapis de fleurs), textile.",
+                personnalites: [
+                    {nom: "Xicoténcatl Axayacatzin", desc: "Chef militaire tlaxcaltèque, résista puis s'allia aux Espagnols."},
+                    {nom: "Miguel N. Lira", desc: "Poète, dramaturge et éditeur du XXe siècle."},
+                    {nom: "Desiderio Hernández Xochitiotzin", desc: "Peintre muraliste spécialisé dans l'histoire de Tlaxcala."}
+                ],
+                wikipedia: "https://fr.wikipedia.org/wiki/Tlaxcala_(État)"
+            },
+            "Veracruz": {
+                capitale: "Xalapa",
+                population: "8 062 579",
+                superficie: "71 823 km²",
+                region: "Centre",
+                langues: "Espagnol, Náhuatl, Totonaco, Huasteco, Popoluca",
+                economie: "PIB: ~60 milliards USD. Port de Veracruz (le plus important du Mexique), pétrole, pétrochimie, agriculture (café, canne à sucre, vanille), tourisme.",
+                attractions: "Port de Veracruz, El Tajín (UNESCO), Pico de Orizaba (plus haut sommet du Mexique), Xalapa (capitale culturelle), Catemaco, Cofre de Perote.",
+                histoire: "Première ville européenne fondée en Amérique continentale (1519) par Cortés. Porte d'entrée du Mexique pendant la colonie. Invasions étrangères multiples (États-Unis 1847, France 1838 et 1861-62). El Tajín: importante cité totonaque. Café introduit au XVIIIe siècle. Carnaval de Veracruz: le plus grand et joyeux du Mexique. Riche mélange culturel afro-caribéen.",
+                reputation: "Carnaval de Veracruz, son jarocho (musique La Bamba), café de Coatepec, vanille de Papantla, Danse des Voladores.",
+                personnalites: [
+                    {nom: "Agustín Lara", desc: "Compositeur et chanteur légendaire, auteur de 'Veracruz' et centaines de chansons."},
+                    {nom: "Teodoro A. Dehesa", desc: "Gouverneur progressiste, modernisa l'État (fin XIXe-début XXe)."},
+                    {nom: "Álvaro Carrillo", desc: "Compositeur de boleros célèbres dont 'Sabor a mí'."}
+                ],
+                wikipedia: "https://fr.wikipedia.org/wiki/Veracruz_(État)"
+            },
+            "Yucatán": {
+                capitale: "Mérida",
+                population: "2 320 898",
+                superficie: "39 671 km²",
+                region: "Péninsule",
+                langues: "Espagnol, Maya",
+                economie: "PIB: ~28 milliards USD. Tourisme, agriculture (henequén, maïs), industrie manufacturière, commerce, services.",
+                attractions: "Chichén Itzá (UNESCO, Merveille du Monde), Uxmal (UNESCO), Mérida (Ville Blanche), cenotes, Réserve de Celestún (flamants roses).",
+                histoire: "Cœur de la civilisation maya classique et postclassique. Conquête espagnole difficile (1527-1546). Mérida fondée en 1542 sur les ruines de T'ho. Prospérité au XIXe siècle grâce au henequén (fibre d'agave). Culture maya vivante et préservée. Architecture coloniale remarquable. Centre culturel important.",
+                reputation: "Chichén Itzá (pyramide de Kukulcán), cochinita pibil, salbutes, henequén, cenotes, guayaberas (chemise traditionnelle), Mérida (ville la plus sûre du Mexique).",
+                personnalites: [
+                    {nom: "Felipe Carrillo Puerto", desc: "Gouverneur socialiste, défenseur des droits des Mayas (années 1920)."},
+                    {nom: "Armando Manzanero", desc: "Compositeur et chanteur romantique légendaire, auteur de 'Somos novios'."},
+                    {nom: "Luis Rosado Vega", desc: "Poète et écrivain, figure de la littérature yucatèque."}
+                ],
+                wikipedia: "https://fr.wikipedia.org/wiki/Yucatán"
+            },
+            "Zacatecas": {
+                capitale: "Zacatecas",
+                population: "1 622 138",
+                superficie: "75 416 km²",
+                region: "Centre",
+                langues: "Espagnol",
+                economie: "PIB: ~20 milliards USD. Mines (argent, or, zinc, plomb - 1er producteur d'argent du Mexique), agriculture, élevage, tourisme.",
+                attractions: "Centro Histórico de Zacatecas (UNESCO), Cerro de la Bufa, Mina El Edén, Museo Rafael Coronel, Chicomostoc (La Quemada).",
+                histoire: "Fondée en 1546 suite à la découverte de riches gisements d'argent. L'une des villes minières les plus importantes de Nouvelle-Espagne. Architecture baroque spectaculaire financée par l'argent. Bataille de Zacatecas (1914): victoire majeure de Pancho Villa pendant la Révolution. Conserve son caractère colonial. Premier producteur d'argent du Mexique.",
+                reputation: "Mines d'argent (1er producteur national), mezcal, tamborazo zacatecano (musique), architecture coloniale rose, Festival Cultural Zacatecas.",
+                personnalites: [
+                    {nom: "Ramón López Velarde", desc: "Poète national du Mexique, auteur de 'La Suave Patria'."},
+                    {nom: "Francisco García Salinas", desc: "Gouverneur libéral du XIXe siècle, modernisateur de l'État."},
+                    {nom: "Manuel M. Ponce", desc: "Compositeur classique majeur (également lié à Aguascalientes)."}
+                ],
+                wikipedia: "https://fr.wikipedia.org/wiki/Zacatecas_(État)"
+            },
+            "Ciudad de México": {
+                capitale: "Mexico (même ville)",
+                population: "9 209 944",
+                superficie: "1 495 km²",
+                region: "Centre",
+                langues: "Espagnol, Náhuatl",
+                economie: "PIB: ~180 milliards USD. Services financiers, commerce, tourisme, technologie, gouvernement, industrie créative. Plus grande économie du pays.",
+                attractions: "Centro Histórico (Zócalo, Palacio Nacional), Teotihuacan, Chapultepec, Xochimilco (UNESCO), Frida Kahlo Museum, Coyoacán, Templo Mayor, Torre Latinoamericana.",
+                histoire: "Fondée comme Tenochtitlan par les Aztèques en 1325 sur un lac. Capitale de l'Empire aztèque, conquise par Cortés en 1521. Capitale de Nouvelle-Espagne puis du Mexique indépendant. L'une des plus grandes villes du monde. Tremblement de terre dévastateur en 1985. Transformation en entité fédérale autonome en 2016. Centre politique, culturel et économique du pays.",
+                reputation: "Capitale du Mexique, tacos al pastor, mariachis à Plaza Garibaldi, lucha libre, musées (plus de 150), murales de Diego Rivera, métro le plus grand d'Amérique latine.",
+                personnalites: [
+                    {nom: "Frida Kahlo", desc: "Peintre iconique, symbole du Mexique et de l'art féministe mondial."},
+                    {nom: "Octavio Paz", desc: "Poète et essayiste, prix Nobel de littérature 1990."},
+                    {nom: "Carlos Slim", desc: "Homme d'affaires, l'un des plus riches du monde."}
+                ],
+                wikipedia: "https://fr.wikipedia.org/wiki/Mexico"
+            }
+        };
+
+        // État sélectionné actuel
+        let selectedState = null;
+        let currentRegionFilter = 'tous';
+
+        // ============================================
+        // FONCTIONS PRINCIPALES
+        // ============================================
+
+        // Afficher les informations d'un État
+        function displayStateInfo(stateName) {
+            const state = statesData[stateName];
+            if (!state) return;
+
+            selectedState = stateName;
+
+            // Mettre à jour le titre
+            document.getElementById('stateName').textContent = stateName;
+            document.getElementById('stateCapital').textContent = `Capitale : ${state.capitale}`;
+
+            // Créer le contenu du panneau
+            const panelBody = document.getElementById('panelBody');
+            panelBody.innerHTML = `
+                <div class="info-section">
+                    <h3>📊 Informations générales</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">Population (2025)</div>
+                            <div class="info-value">${state.population}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Superficie</div>
+                            <div class="info-value">${state.superficie}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Région</div>
+                            <div class="info-value">${state.region}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Langue(s)</div>
+                            <div class="info-value">${state.langues}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <h3>💰 Économie</h3>
+                    <p class="info-text">${state.economie}</p>
+                </div>
+
+                <div class="info-section">
+                    <h3>🌿 Attractions principales</h3>
+                    <p class="info-text">${state.attractions}</p>
+                </div>
+
+                <div class="info-section">
+                    <h3>📜 Histoire</h3>
+                    <p class="info-text">${state.histoire}</p>
+                </div>
+
+                <div class="info-section">
+                    <h3>⭐ Réputation &amp; Culture</h3>
+                    <p class="info-text">${state.reputation}</p>
+                </div>
+
+                <div class="info-section">
+                    <h3>👤 Personnalités célèbres</h3>
+                    <div class="personalities-list">
+                        ${state.personnalites.map(p => `
+                            <div class="personality-item">
+                                <div class="personality-name">${p.nom}</div>
+                                <div class="personality-desc">${p.desc}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <a href="${state.wikipedia}" target="_blank" class="wiki-btn">
+                        📖 En savoir plus sur Wikipedia
+                    </a>
+                </div>
+            `;
+
+            // Afficher le panneau
+            const sidePanel = document.getElementById('sidePanel');
+            const overlay = document.getElementById('overlay');
+            sidePanel.classList.remove('hidden');
+            overlay.classList.add('active');
+        }
+
+        // Fermer le panneau
+        function closePanel() {
+            const sidePanel = document.getElementById('sidePanel');
+            const overlay = document.getElementById('overlay');
+            sidePanel.classList.add('hidden');
+            overlay.classList.remove('active');
+            selectedState = null;
+        }
+
+        // Autocomplétion de recherche
+        function setupAutocomplete() {
+            const searchInput = document.getElementById('searchInput');
+            const autocompleteList = document.getElementById('autocompleteList');
+
+            searchInput.addEventListener('input', (e) => {
+                const value = e.target.value.toLowerCase();
+                autocompleteList.innerHTML = '';
+
+                if (value.length === 0) {
+                    autocompleteList.classList.remove('active');
+                    return;
+                }
+
+                const matches = Object.keys(statesData).filter(state => 
+                    state.toLowerCase().includes(value)
+                );
+
+                if (matches.length > 0) {
+                    matches.forEach(state => {
+                        const item = document.createElement('div');
+                        item.className = 'autocomplete-item';
+                        item.textContent = state;
+                        item.addEventListener('click', () => {
+                            displayStateInfo(state);
+                            searchInput.value = '';
+                            autocompleteList.classList.remove('active');
+                        });
+                        autocompleteList.appendChild(item);
+                    });
+                    autocompleteList.classList.add('active');
+                } else {
+                    autocompleteList.classList.remove('active');
+                }
+            });
+
+            // Fermer l'autocomplétion en cliquant ailleurs
+            document.addEventListener('click', (e) => {
+                if (!searchInput.contains(e.target) && !autocompleteList.contains(e.target)) {
+                    autocompleteList.classList.remove('active');
+                }
+            });
+        }
+
+        // Filtrage par région
+        function setupRegionFilter() {
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            
+            filterButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Mettre à jour les boutons actifs
+                    filterButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+
+                    // Obtenir la région sélectionnée
+                    currentRegionFilter = btn.dataset.region;
+
+                    // Afficher un message ou filtrer la carte
+                    // (Dans une version avancée, on pourrait masquer/afficher des zones sur la carte)
+                    console.log(`Filtre région: ${currentRegionFilter}`);
+                });
+            });
+        }
+
+        // Créer des zones cliquables sur la carte
+        function createClickableMap() {
+            const mapContainer = document.querySelector('.map-container');
+            const mapImage = document.getElementById('mapImage');
+
+            // Zone d'information pour indiquer qu'on peut cliquer
+            const infoDiv = document.createElement('div');
+            infoDiv.style.cssText = 'text-align: center; margin-top: 16px; color: var(--color-text-secondary); font-size: var(--font-size-sm);';
+            infoDiv.innerHTML = '💡 <strong>Astuce :</strong> Utilisez la barre de recherche ci-dessus pour explorer les 32 États du Mexique';
+            mapContainer.appendChild(infoDiv);
+
+            // Pour une vraie carte interactive, on utiliserait une carte SVG ou des coordonnées précises
+            // Ici, on fournit une alternative avec la recherche
+            mapImage.style.cursor = 'help';
+            mapImage.addEventListener('click', () => {
+                alert('Utilisez la barre de recherche pour sélectionner un État et voir ses détails complets!');
+            });
+        }
+
+        // ============================================
+        // INITIALISATION
+        // ============================================
+        document.addEventListener('DOMContentLoaded', () => {
+            // Setup event listeners
+            document.getElementById('closePanel').addEventListener('click', closePanel);
+            document.getElementById('overlay').addEventListener('click', closePanel);
+
+            // Setup features
+            setupAutocomplete();
+            setupRegionFilter();
+            createClickableMap();
+
+            console.log('Application chargée avec', Object.keys(statesData).length, 'États du Mexique');
+        });
+    </script>
+</body>
+</html>
